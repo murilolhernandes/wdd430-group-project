@@ -10,3 +10,27 @@ Mukendji Ngandu
 Toyin Ajiboye
 Murilo Hernandes
 ```
+
+## Design:
+
+### Tailwind - Earthy Feel Style:
+```
+bg-stone-100
+text-slate-800
+bg-emerald-700
+hover:bg-emerald-800
+accent-amber-600
+```
+
+### Typography - Google Fonts:
+```
+Headers: San Serif
+Paragraphs: Serif
+```
+
+### General Layout:
+```
+Header: Centered title & Drop down navigation/wayfind & Search, Cart, & Login Buttons
+Body: Hero Image & Call to Action: Create an account & Dynamically Generated Listings
+Footer: Social Media & Website Info (project info, contact info)
+```
