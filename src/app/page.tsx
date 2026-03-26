@@ -37,9 +37,7 @@ export default function Home() {
           </div>
 
           <div className="hero-placeholder flex items-center justify-center">
-            <span className="text-lg font-medium text-stone-600">
-              Hero Image Placeholder
-            </span>
+              <img src={"/images/hero-image1.jpg"} alt="Handcrafted Hero Image" className="w-full h-full object-cover rounded-[2rem]"></img>
           </div>
         </div>
       </section>
