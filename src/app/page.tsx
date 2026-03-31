@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
@@ -26,7 +25,7 @@ export default function Home() {
             </p>
 
             <div className="flex flex-wrap gap-4">
-              <Link href="/signup" className="earth-button-primary">
+              <Link href="/" className="earth-button-primary">
                 Create Account
               </Link>
 

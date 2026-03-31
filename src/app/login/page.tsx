@@ -1,5 +1,5 @@
 import SiteLogo from "@/app/ui/site-logo";
-import LoginForm from '@/app/ui/login-form';
+import LoginForm from '@/app/ui/login/login-form';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 

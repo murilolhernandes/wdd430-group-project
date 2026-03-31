@@ -1,4 +1,4 @@
-import CreateAccountForm from '@/app/ui/create-account-form';
+import CreateAccountForm from '@/app/ui/login/create-account-form';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 
