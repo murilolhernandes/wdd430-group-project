@@ -1,28 +1,27 @@
 'use server';
 
-import NextAuth from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
-import { MongoDBAdapter } from '@auth/mongodb-adapter';
-import clientPromise from '@/app/lib/mongodb';
-import { redirect } from "next/dist/server/api-utils";
+import { signIn } from "@/auth";
+import { AuthError } from 'next-auth';
 
-export async function authenticate() {};
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', Object.fromEntries(formData));
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid email or password.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
+  };
+}
 
-export const authOptions = {
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-  ],
-  adapter: MongoDBAdapter(clientPromise),
-  // await mongodb.auth.signInWithOAuth({
-  //   provider: 'google',
-  //   options: {
-  //     redirectTo: `${window.location.origin}/auth/callback`,
-  //   },
-  // });
-};
-
-const signInAction = NextAuth(authOptions);
-export { signInAction as GET, signInAction as POST };
+export async function googleAuthenticate() {
+  await signIn('google');
+}

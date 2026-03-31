@@ -3,11 +3,11 @@
 import {
   AtSymbolIcon,
   KeyIcon,
-  // ExclamationCircleIcon,
+  ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { useActionState } from 'react';
-import { authenticate, signInAction } from '@/app/lib/actions';
+import { authenticate, googleAuthenticate } from '@/app/lib/actions';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -21,61 +21,58 @@ export default function LoginForm() {
   );
 
   return (
-    <form action={formAction} className='space-y-3'>
+    <div className='space-y-3'>
       <div className='earth-card flex-1 p-8'>
         <h1 className='mb-6 text-2xl font-bold text-stone-800'>
           Please log in to continue.
         </h1>
-        <div className='w-full'>
+
+        <form action={formAction} className='w-full'>
           <div>
-            <label
-              className='mb-3 mt-5 block text-xs font-semibold uppercase tracking-wider text-stone-500'
-              htmlFor='email'
-            >
+            <label className='mb-3 mt-5 block text-xs font-semibold uppercase tracking-wider text-stone-500' htmlFor='email'>
               Email
             </label>
             <div className='relative'>
               <input
                 className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
-                id='email'
-                type='email'
-                name='email'
-                placeholder='Enter your email address'
-                required
+                id='email' type='email' name='email' placeholder='Enter your email address' required
               />
               <AtSymbolIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
             </div>
           </div>
           <div className='mt-4'>
-            <label
-              className='mb-3 mt-5 block text-xs font-semibold uppercase tracking-wider text-stone-500'
-              htmlFor='password'
-            >
+            <label className='mb-3 mt-5 block text-xs font-semibold uppercase tracking-wider text-stone-500' htmlFor='password'>
               Password
             </label>
             <div className='relative'>
               <input
                 className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
-                id='password'
-                type='password'
-                name='password'
-                placeholder='Enter your password'
-                required
-                minLength={6}
+                id='password' type='password' name='password' placeholder='Enter your password' required minLength={6}
               />
               <KeyIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
             </div>
           </div>
-        </div>
-        <input type='hidden' name='redirectTo' value={callbackUrl} />
 
-        <button
-          type='submit'
-          className='earth-button-primary mt-6 w-full flex items-center justify-center gap-2'
-          aria-disabled={isPending}
-        >
-          Log in <ArrowRightIcon className='h-5 w-5' />
-        </button>
+          <input type='hidden' name='redirectTo' value={callbackUrl} />
+
+          <button
+            type='submit'
+            className='earth-button-primary mt-6 w-full flex items-center justify-center gap-2'
+            aria-disabled={isPending}
+            disabled={isPending}
+          >
+            {isPending ? 'Logging in...' : 'Log in'} <ArrowRightIcon className='h-5 w-5' />
+          </button>
+
+          <div className='flex h-8 items-end space-x-1 mt-2' aria-live='polite' aria-atomic='true'>
+            {errorMessage && (
+              <>
+                <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
+                <p className="text-sm text-red-500">{errorMessage}</p>
+              </>
+            )}
+          </div>
+        </form>
 
         <div className='relative my-6'>
           <div className='absolute inset-0 flex items-center'>
@@ -86,11 +83,12 @@ export default function LoginForm() {
           </div>
         </div>
 
-        <button
-          type='button'
-          className='w-full flex items-center justify-center gap-3 bg-white border border-stone-300 rounded-md p-3 text-stone-700 hover:bg-stone-50 transition-colors font-medium shadow-sm cursor-pointer'
-        >
-          <svg className='w-5 h-5' viewBox='0 0 24 24'>
+        <form action={googleAuthenticate}>
+          <button
+            type='submit'
+            className='w-full flex items-center justify-center gap-3 bg-white border border-stone-300 rounded-md p-3 text-stone-700 hover:bg-stone-50 transition-colors font-medium shadow-sm cursor-pointer'
+          >
+            <svg className='w-5 h-5' viewBox='0 0 24 24'>
             <path
               d='M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z'
               fill='#4285F4'
@@ -107,32 +105,18 @@ export default function LoginForm() {
               d='M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z'
               fill='#EA4335'
             />
-          </svg>
-          Sign in with Google
-        </button>
+            </svg>
+            Sign in with Google
+          </button>
+        </form>
 
         <p className='mt-6 text-center text-sm text-stone-600'>
           Don't have an account?{' '}
-          <Link
-            href='/'
-            className='font-semibold text-stone-800 hover:underline'
-          >
+          <Link href='/signup' className='font-semibold text-stone-800 hover:underline'>
             Create one here
           </Link>
         </p>
-        {/* <div 
-          className='flex h-8 items-end space-x-1'
-          aria-live='polite'
-          aria-atomic='true'
-          >
-            {errorMessage && (
-            <>
-              <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-              <p className="text-sm text-red-500">{errorMessage}</p>
-            </>
-          )}
-        </div> */}
-      </div>
-    </form>
+    </div>
+  </div>
   );
 }
