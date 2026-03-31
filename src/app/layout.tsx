@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     template: "%s | Handcrafted Haven",
     default: "Handcrafted Haven"
   },
-  description: "WDD 430 Group Project",
+  description: "For all your handcrafted haven needs | WDD 430 Group Project",
 };
 
 export default function RootLayout({

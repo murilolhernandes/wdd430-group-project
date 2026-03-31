@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 
@@ -35,10 +36,14 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="hero-placeholder flex items-center justify-center">
-            <span className="text-lg font-medium text-stone-600">
-              Hero Image Placeholder
-            </span>
+          <div className="hero-placeholder relative flex items-center justify-center min-h-[400px] md:min-h-[500px]">
+            <Image
+              src='/images/hero-image1.jpg'
+              alt='Handcrafted Hero Image'
+              fill
+              priority
+              className="object-cover rounded-[2rem]"
+              />
           </div>
         </div>
       </section>
