@@ -7,7 +7,7 @@ import { User } from '@/app/lib/models/User';
 import bcrypt from 'bcryptjs';
 
 
-export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
+export const { handlers, auth, signIn, signOut } = NextAuth({
   // adapter: MongoDBAdapter(clientPromise),
   providers: [
     GoogleProvider({
