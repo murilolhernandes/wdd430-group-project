@@ -1,9 +1,9 @@
-import CreateAccountForm from '@/app/ui/login/create-account-form';
+// import CreateAccountForm from '@/app/ui/login/create-account-form';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Login',
+  title: 'Sign up',
 };
 
 export default function LoginPage() {
@@ -16,7 +16,7 @@ export default function LoginPage() {
           </div>
         </div>
           <Suspense>
-            <CreateAccountForm />
+            {/* <CreateAccountForm /> */}
           </Suspense>
       </div>
     </main>
