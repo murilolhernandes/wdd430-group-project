@@ -38,6 +38,10 @@ export default async function Home() {
               <Link href="/shop" className="earth-button-secondary">
                 Explore Collection
               </Link>
+
+              <Link href="/listing" className="earth-button-secondary">
+                Create Product Listing
+              </Link>
             </div>
           </div>
 
