@@ -64,7 +64,7 @@ export default function LoginForm() {
             {isPending ? 'Logging in...' : 'Log in'} <ArrowRightIcon className='h-5 w-5' />
           </button>
 
-          <div className='flex h-8 items-end space-x-1 mt-2' aria-live='polite' aria-atomic='true'>
+          <div className='flex items-center space-x-1 empty:hidden mt-2' aria-live='polite' aria-atomic='true'>
             {errorMessage && (
               <>
                 <ExclamationCircleIcon className="h-5 w-5 text-red-500" />

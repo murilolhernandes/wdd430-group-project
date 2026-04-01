@@ -1,14 +1,9 @@
 import Link from "next/link";
-import Image from "next/image";
-import Footer from "@/components/footer";
-import Header from "@/components/header";
+import HeroImage from "@/components/hero-image";
 
 export default function Home() {
   return (
       <div>
-      <Header />
-    
-      <main className="min-h-screen">
       <section className="section-padding">
         <div className="container-earth grid gap-12 md:grid-cols-2 md:items-center">
           <div>
@@ -26,7 +21,7 @@ export default function Home() {
             </p>
 
             <div className="flex flex-wrap gap-4">
-              <Link href="/" className="earth-button-primary">
+              <Link href="/signup" className="earth-button-primary">
                 Create Account
               </Link>
 
@@ -37,13 +32,7 @@ export default function Home() {
           </div>
 
           <div className="hero-placeholder relative flex items-center justify-center min-h-[400px] md:min-h-[500px]">
-            <Image
-              src='/images/hero-image1.jpg'
-              alt='Handcrafted Hero Image'
-              fill
-              priority
-              className="object-cover rounded-[2rem]"
-              />
+            <HeroImage />
           </div>
         </div>
       </section>
@@ -72,10 +61,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </main>
-   
-
-      <Footer />
     </div>
   );
 }

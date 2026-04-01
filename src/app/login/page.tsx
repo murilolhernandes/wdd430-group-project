@@ -1,4 +1,4 @@
-import SiteLogo from "@/app/ui/site-logo";
+import HeroImage from "@/components/hero-image";
 import LoginForm from '@/app/ui/login/login-form';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
@@ -9,17 +9,17 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <main className='flex items-center justify-center md:h-screen'>
-      <div className='relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:mt-32'>
-        <div className='flex h-20 w-full items-end rounded-lg bg-blue-500 p-3 md:h-36'>
-          <div className='w-32 text-white md:w-36'>
-            <SiteLogo />
-          </div>
+    <div className='flex w-full items-center justify-center p-4 py-16 md:py-24'>
+      <div className='flex w-full max-w-5xl flex-col items-center gap-8 md:flex-row md:items-stretch md:gap-12'>
+        <div className="relative flex w-full flex-1 items-center justify-center overflow-hidden rounded-2xl md:w-1/2">
+          <HeroImage />
         </div>
+        <div className="flex w-full max-w-[450px] flex-col justify-center md:w-1/2">
           <Suspense>
             <LoginForm />
           </Suspense>
-      </div>
-    </main>
+        </div>
+      </div >
+    </div>
   );
 }
