@@ -1,7 +1,10 @@
 import Link from "next/link";
 import HeroImage from "@/components/hero-image";
+import { auth } from '@/auth';
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+
   return (
       <div>
       <section className="section-padding">
@@ -21,9 +24,16 @@ export default function Home() {
             </p>
 
             <div className="flex flex-wrap gap-4">
-              <Link href="/signup" className="earth-button-primary">
-                Create Account
-              </Link>
+              {session?.user ? (
+                <Link href='/account-info' className='earth-button-primary text-sm'>
+                  Account
+                </Link>
+              ) : (
+                <Link href="/create-account" className="earth-button-primary">
+                  Create Account
+                </Link>
+              )}
+              
 
               <Link href="/shop" className="earth-button-secondary">
                 Explore Collection

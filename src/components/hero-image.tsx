@@ -8,6 +8,7 @@ export default function HeroImage() {
       fill
       priority
       className="object-cover rounded-[2rem]"
+      sizes='(max-width: 768px) 100vw, 50vw'
     />
   );
 }

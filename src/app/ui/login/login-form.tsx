@@ -57,7 +57,7 @@ export default function LoginForm() {
 
           <button
             type='submit'
-            className='earth-button-primary mt-6 w-full flex items-center justify-center gap-2'
+            className='earth-button-primary mt-6 w-full flex items-center justify-center gap-2 cursor-pointer'
             aria-disabled={isPending}
             disabled={isPending}
           >
@@ -111,8 +111,8 @@ export default function LoginForm() {
         </form>
 
         <p className='mt-6 text-center text-sm text-stone-600'>
-          Don't have an account?{' '}
-          <Link href='/signup' className='font-semibold text-stone-800 hover:underline'>
+          {"Don't have an account? "}
+          <Link href='/create-account' className='font-semibold text-stone-800 hover:underline'>
             Create one here
           </Link>
         </p>

@@ -4,6 +4,7 @@ import {
   AtSymbolIcon,
   KeyIcon,
   ExclamationCircleIcon,
+  UserCircleIcon
 } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { useActionState } from 'react';
@@ -28,6 +29,30 @@ export default function CreateAccountForm() {
         </h1>
 
         <form action={formAction} className='w-full'>
+          <div>
+            <label className='mb-3 mt-5 block text-xs font-semibold uppercase tracking-wider text-stone-500' htmlFor='email'>
+              First Name
+            </label>
+            <div className='relative'>
+              <input
+                className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
+                id='firstName' type='text' name='firstName' placeholder='Enter your first name' required
+              />
+              <UserCircleIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
+            </div>
+          </div>
+          <div>
+            <label className='mb-3 mt-5 block text-xs font-semibold uppercase tracking-wider text-stone-500' htmlFor='email'>
+              Last Name
+            </label>
+            <div className='relative'>
+              <input
+                className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
+                id='lastName' type='text' name='lastName' placeholder='Enter your last name' required
+              />
+              <UserCircleIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
+            </div>
+          </div>
           <div>
             <label className='mb-3 mt-5 block text-xs font-semibold uppercase tracking-wider text-stone-500' htmlFor='email'>
               Email
@@ -61,7 +86,7 @@ export default function CreateAccountForm() {
             aria-disabled={isPending}
             disabled={isPending}
           >
-            {isPending ? 'Logging in...' : 'Log in'} <ArrowRightIcon className='h-5 w-5' />
+            {isPending ? 'Creating account...' : 'Create account'} <ArrowRightIcon className='h-5 w-5' />
           </button>
 
           <div className='flex items-center space-x-1 empty:hidden mt-2' aria-live='polite' aria-atomic='true'>
@@ -106,7 +131,7 @@ export default function CreateAccountForm() {
               fill='#EA4335'
             />
             </svg>
-            Sign in with Google
+            Sign up with Google
           </button>
         </form>
 

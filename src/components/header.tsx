@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
+import { signOut } from 'next-auth/react';
+import type { Session } from 'next-auth';
 
-export default function Header() {
+export default function Header({ session }: { session: Session | null }) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -40,78 +42,106 @@ export default function Header() {
     <header className='site-header sticky top-0 z-50'>
       <div className='mx-auto flex max-w-7xl items-center justify-between px-6 py-4'>
         {/* Logo */}
-        <Link href='/' className='flex items-center gap-3'>
-          <div className='site-logo flex h-12 w-12 items-center justify-center text-sm font-bold'>
-            HH
-          </div>
-        </Link>
+        <div className='flex flex-1 items-center justify-start'>
+          <Link href='/' className='flex items-center gap-3'>
+            <div className='site-logo flex h-12 w-12 items-center justify-center text-sm font-bold'>
+              HH
+            </div>
+          </Link>
+        </div>
 
-        {/* Site Title */}
-        <Link href='/' className='absolute left-1/2 -translate-x-1/2'>
-          <h1 className='text-2xl font-bold tracking-wide text-stone-800 md:text-3xl'>
-            Handcrafted Haven
-          </h1>
-        </Link>
+        <div className={`flex flex-shrink-0 items-center justify-center overflow-hidden whitespace-nowrap transition-all duration-500 ease-in-out md:max-w-none md:opacity-100 md:px-4 ${
+          searchOpen ? 'max-w-0 opacity-0 px-0' : 'max-w-[250px] opacity-100 px-2 sm:px-4'
+        }`}>
+          {/* Site Title */}
+          <Link href='/'>
+            <h1 className='text-xl font-bold tracking-wide text-stone-800 sm:text-2xl md:text-3xl'>
+              Handcrafted Haven
+            </h1>
+          </Link>
+        </div>
 
-      {/* Nav */}
-        <nav>
-          <ul className='flex items-center gap-3 md:gap-4'>
+        {/* Nav */}
+        <div className='flex flex-1 items-center justify-end'>
+          <nav>
+            <ul className='flex items-center gap-3 md:gap-4'>
 
-            {/* Animated Search */}
-            <li>
-              <form
-                onSubmit={handleSearchSubmit}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-                className="search-pill"
-                data-open={searchOpen}
-              >
-                <button
-                  type="submit"
-                  aria-label="Search"
-                  className="search-icon-btn"
+              {/* Animated Search */}
+              <li>
+                <form
+                  onSubmit={handleSearchSubmit}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                  className="search-pill"
+                  data-open={searchOpen}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="search-svg"
-                    aria-hidden="true"
+                  <button
+                    type="submit"
+                    aria-label="Search"
+                    className="search-icon-btn"
                   >
-                    <circle cx="11" cy="11" r="7" />
-                    <line x1="16.5" y1="16.5" x2="22" y2="22" />
-                  </svg>
-                </button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="search-svg"
+                      aria-hidden="true"
+                    >
+                      <circle cx="11" cy="11" r="7" />
+                      <line x1="16.5" y1="16.5" x2="22" y2="22" />
+                    </svg>
+                  </button>
 
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  onBlur={handleBlur}
-                  placeholder="Search..."
-                  className="search-input"
-                  aria-label="Search query"
-                />
-              </form>
-            </li>
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    onBlur={handleBlur}
+                    placeholder="Search..."
+                    className="search-input"
+                    aria-label="Search query"
+                  />
+                </form>
+              </li>
 
-            <li>
-              <Link href='/cart' className='nav-link text-sm font-medium'>
-                Cart
-              </Link>
-            </li>
-            <li>
-              <Link href='/login' className='earth-button-primary text-sm'>
-                Login
-              </Link>
-            </li>
-          </ul>
-        </nav>
+              <li>
+                <Link href='/cart' className='nav-link text-sm font-medium'>
+                  Cart
+                </Link>
+              </li>
+              
+              {session?.user ? (
+                <>
+                  <li>
+                    <Link href='/account-info' className='earth-button-primary text-sm'>
+                      Account
+                    </Link>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => signOut({ callbackUrl: '/' })}
+                      className='text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors cursor-pointer'
+                    >
+                      Log out
+                    </button>
+                  </li>
+                </>
+              ): (
+                <li>
+                  <Link href='/login' className='earth-button-primary text-sm'>
+                    Login
+                  </Link>
+                </li>
+              )}
+
+            </ul>
+          </nav>
+        </div>
       </div>
 
       <style>{`

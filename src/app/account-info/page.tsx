@@ -1,9 +1,17 @@
-"use client";
+// "use client";
 
 import React from 'react';
 import styles from './account.module.css';
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
-export default function AccountInfoPage() {
+export default async function AccountInfoPage() {
+  const session = await auth();
+
+  if (!session) {
+    redirect('/login');
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
