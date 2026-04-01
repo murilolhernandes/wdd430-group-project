@@ -4,9 +4,11 @@ import {
   AtSymbolIcon,
   KeyIcon,
   ExclamationCircleIcon,
+  EyeSlashIcon,
+  EyeIcon
 } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
 import { authenticate, googleAuthenticate } from '@/app/lib/actions';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -19,6 +21,8 @@ export default function LoginForm() {
     authenticate,
     undefined,
   );
+
+    const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className='space-y-3'>
@@ -46,10 +50,26 @@ export default function LoginForm() {
             </label>
             <div className='relative'>
               <input
-                className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
-                id='password' type='password' name='password' placeholder='Enter your password' required minLength={6}
+                className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 pr-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
+                id='password' 
+                type={showPassword ? 'text' : 'password'}
+                name='password' 
+                placeholder='Enter your password' 
+                required minLength={6}
               />
               <KeyIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 focus:outline-none"
+              >
+                {showPassword ? (
+                  <EyeSlashIcon className="h-5 w-5" />
+                ) : (
+                  <EyeIcon className="h-5 w-5" />
+                )}
+              </button>
             </div>
           </div>
 

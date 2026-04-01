@@ -4,22 +4,21 @@ import {
   AtSymbolIcon,
   KeyIcon,
   ExclamationCircleIcon,
-  UserCircleIcon
+  UserCircleIcon,
+  EyeIcon,
+  EyeSlashIcon
 } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
-import { useActionState } from 'react';
-import { authenticate, googleAuthenticate } from '@/app/lib/actions';
-import { useSearchParams } from 'next/navigation';
+import { useActionState, useState } from 'react';
+import { googleAuthenticate, createAccount } from '@/app/lib/actions';
 import Link from 'next/link';
 
 
 export default function CreateAccountForm() {
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/'; // Not sure where to redirect to yet.
-  const [errorMessage, formAction, isPending] = useActionState(
-    authenticate,
-    undefined,
-  );
+  const [state, formAction, isPending] = useActionState(createAccount, undefined)
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   return (
     <div className='space-y-3'>
@@ -37,6 +36,7 @@ export default function CreateAccountForm() {
               <input
                 className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
                 id='firstName' type='text' name='firstName' placeholder='Enter your first name' required
+                defaultValue={state?.fields?.firstName || ''}
               />
               <UserCircleIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
             </div>
@@ -49,6 +49,7 @@ export default function CreateAccountForm() {
               <input
                 className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
                 id='lastName' type='text' name='lastName' placeholder='Enter your last name' required
+                defaultValue={state?.fields?.lastName || ''}
               />
               <UserCircleIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
             </div>
@@ -61,6 +62,7 @@ export default function CreateAccountForm() {
               <input
                 className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
                 id='email' type='email' name='email' placeholder='Enter your email address' required
+                defaultValue={state?.fields?.email || ''}
               />
               <AtSymbolIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
             </div>
@@ -71,14 +73,56 @@ export default function CreateAccountForm() {
             </label>
             <div className='relative'>
               <input
-                className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
-                id='password' type='password' name='password' placeholder='Enter your password' required minLength={6}
+                className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 pr-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
+                id='password' 
+                type={showPassword ? 'text' : 'password'}
+                name='password' 
+                placeholder='Enter your password' 
+                required minLength={6}
               />
               <KeyIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
+              
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 focus:outline-none"
+              >
+                {showPassword ? (
+                  <EyeSlashIcon className="h-5 w-5" />
+                ) : (
+                  <EyeIcon className="h-5 w-5" />
+                )}
+              </button>
             </div>
           </div>
+          <div className='mt-4'>
+            <label className='mb-3 mt-5 block text-xs font-semibold uppercase tracking-wider text-stone-500' htmlFor='confirmPassword'>
+              Confirm Password
+            </label>
+            <div className='relative'>
+              <input
+                className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 pr-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
+                id='confirmPassword' 
+                type={showConfirmPassword ? 'text' : 'password'}
+                name='confirmPassword' 
+                placeholder='Confirm your password' 
+                required minLength={6}
+              />
+              <KeyIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
 
-          <input type='hidden' name='redirectTo' value={callbackUrl} />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 focus:outline-none"
+              >
+                {showConfirmPassword ? (
+                  <EyeSlashIcon className="h-5 w-5" />
+                ) : (
+                  <EyeIcon className="h-5 w-5" />
+                )}
+              </button>
+            </div>
+          </div>
 
           <button
             type='submit'
@@ -90,10 +134,10 @@ export default function CreateAccountForm() {
           </button>
 
           <div className='flex items-center space-x-1 empty:hidden mt-2' aria-live='polite' aria-atomic='true'>
-            {errorMessage && (
+            {state?.message && (
               <>
                 <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-                <p className="text-sm text-red-500">{errorMessage}</p>
+                <p className="text-sm text-red-500">{state.message}</p>
               </>
             )}
           </div>

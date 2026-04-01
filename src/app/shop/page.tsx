@@ -1,6 +1,4 @@
 import ItemCard, { type ShopItem } from "@/components/item-card";
-import { auth } from '@/auth'; 
-import { redirect } from 'next/navigation';
 
 const items: ShopItem[] = [
   {
@@ -95,12 +93,6 @@ const categoryCount = new Set(items.map((item) => item.category)).size;
 const readyToShipCount = items.filter((item) => item.stock > 0).length;
 
 export default async function ShopPage() {
-  const session = await auth();
-
-  if (session) {
-    redirect('/account-info');
-  }
-
   return (
     <div>
       <section className="section-padding">

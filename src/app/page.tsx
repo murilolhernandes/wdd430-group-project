@@ -6,7 +6,7 @@ export default async function Home() {
   const session = await auth();
 
   return (
-      <div>
+    <div>
       <section className="section-padding">
         <div className="container-earth grid gap-12 md:grid-cols-2 md:items-center">
           <div>

@@ -5,8 +5,9 @@ import dbConnect from '@/app/lib/mongodb';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import { User } from '@/app/lib/models/User';
 import bcrypt from 'bcryptjs';
+import { MongoClient } from 'mongodb';
 
-const clientPromise = dbConnect().then((m) => m.connection.getClient() as any);
+const clientPromise = dbConnect().then((m) => m.connection.getClient() as MongoClient);
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: MongoDBAdapter(clientPromise),
@@ -15,6 +16,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       allowDangerousEmailAccountLinking: true,
+
+      profile(profile) {
+        return {
+          id: profile.sub,
+          firstName: profile.given_name,
+          lastName: profile.family_name,
+          email: profile.email,
+          role: 'user',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }
+      }
     }),
     CredentialsProvider({
       name: 'Credentials',
@@ -45,6 +58,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               id: user._id.toString(),
               email: user.email,
               name: user.name,
+              role: user.role,
             };
           }
 
@@ -60,4 +74,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     strategy: 'jwt',
     maxAge: 24 * 60 * 60, // 24 Hours
   },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.role = token.role;
+      }
+      return session;
+    }
+  }
 });
