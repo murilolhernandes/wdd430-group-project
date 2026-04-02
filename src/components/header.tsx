@@ -15,7 +15,7 @@ export default function Header({ session }: { session: Session | null }) {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+      router.push(`/shop?q=${encodeURIComponent(query.trim())}`);
       setQuery("");
       setSearchOpen(false);
     }
