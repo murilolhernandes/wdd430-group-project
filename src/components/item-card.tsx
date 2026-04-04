@@ -1,19 +1,6 @@
+import type { Product } from "@/lib/products";
 import Image from "next/image";
-
-export type ShopItem = {
-  id: string;
-  name: string;
-  category: string;
-  artisan: string;
-  material: string;
-  price: number;
-  stock: number;
-  shippingEstimate: string;
-  imageSrc: string;
-  imageAlt: string;
-  description: string;
-  featured?: boolean;
-};
+import Link from "next/link";
 
 const priceFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -21,13 +8,13 @@ const priceFormatter = new Intl.NumberFormat("en-US", {
 });
 
 type ItemCardProps = {
-  item: ShopItem;
+  item: Product;
 };
 
 export default function ItemCard({ item }: ItemCardProps) {
   return (
-    <details className="earth-card h-full overflow-hidden transition duration-200 hover:-translate-y-1 hover:shadow-xl">
-      <summary className="list-none cursor-pointer p-6 [&::-webkit-details-marker]:hidden">
+    <article className="earth-card h-full overflow-hidden transition duration-200 hover:-translate-y-1 hover:shadow-xl">
+      <Link href={`/shop/${item.slug}`} className="flex h-full flex-col gap-5 p-6">
         <div className="flex h-full flex-col gap-5">
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -59,56 +46,22 @@ export default function ItemCard({ item }: ItemCardProps) {
 
           <p className="text-sm text-stone-600">{item.description}</p>
 
-          <div className="flex items-end justify-between gap-4">
+          <div className="mt-auto flex items-end justify-between gap-4">
             <div>
               <p className="text-2xl font-semibold text-stone-800">
                 {priceFormatter.format(item.price)}
               </p>
-              <p className="text-sm text-stone-500">{item.stock} pieces left</p>
+              <p className="text-sm text-stone-500">
+                {item.stock > 0 ? `${item.stock} pieces left` : "Sold out"}
+              </p>
             </div>
 
             <span className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-medium text-stone-700">
-              Click for details
+              View product
             </span>
           </div>
         </div>
-      </summary>
-
-      <div className="border-t border-[var(--border)] bg-stone-50/80 p-6">
-        <dl className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <dt className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
-              Artisan
-            </dt>
-            <dd className="mt-2 text-base text-stone-700">{item.artisan}</dd>
-          </div>
-
-          <div>
-            <dt className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
-              Material
-            </dt>
-            <dd className="mt-2 text-base text-stone-700">{item.material}</dd>
-          </div>
-
-          <div>
-            <dt className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
-              Availability
-            </dt>
-            <dd className="mt-2 text-base text-stone-700">
-              {item.stock} ready to ship
-            </dd>
-          </div>
-
-          <div>
-            <dt className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
-              Shipping
-            </dt>
-            <dd className="mt-2 text-base text-stone-700">
-              {item.shippingEstimate}
-            </dd>
-          </div>
-        </dl>
-      </div>
-    </details>
+      </Link>
+    </article>
   );
 }
