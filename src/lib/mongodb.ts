@@ -22,7 +22,10 @@ function getMongoClientPromise() {
   return globalForMongo._mongoClientPromise;
 }
 
+export { getMongoClientPromise };
+
 export async function getDatabase() {
   const client = await getMongoClientPromise();
   return process.env.MONGODB_DB ? client.db(process.env.MONGODB_DB) : client.db();
 }
+

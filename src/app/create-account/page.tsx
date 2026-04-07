@@ -1,12 +1,12 @@
-import HeroImage from "@/components/hero-image";
-import LoginForm from '@/app/ui/login/login-form';
+import HeroImage from '@/components/hero-image';
+import CreateAccountForm from '@/app/ui/login/create-account-form';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
+import { auth } from '@/auth'; 
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: 'Login',
+  title: 'Sign up',
 };
 
 export default async function LoginPage() {
@@ -24,7 +24,7 @@ export default async function LoginPage() {
         </div>
         <div className="flex w-full max-w-[450px] flex-col justify-center md:w-1/2">
           <Suspense fallback={<div>Loading form...</div>}>
-            <LoginForm />
+            <CreateAccountForm />
           </Suspense>
         </div>
       </div >

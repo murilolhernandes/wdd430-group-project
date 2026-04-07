@@ -1,14 +1,12 @@
-
 import Link from "next/link";
-import Footer from "@/components/footer";
-import Header from "@/components/header";
+import HeroImage from "@/components/hero-image";
+import { auth } from '@/auth';
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+
   return (
-      <div>
-      <Header />
-    
-      <main className="min-h-screen">
+    <div>
       <section className="section-padding">
         <div className="container-earth grid gap-12 md:grid-cols-2 md:items-center">
           <div>
@@ -26,9 +24,16 @@ export default function Home() {
             </p>
 
             <div className="flex flex-wrap gap-4">
-              <Link href="/signup" className="earth-button-primary">
-                Create Account
-              </Link>
+              {session?.user ? (
+                <Link href='/account-info' className='earth-button-primary text-sm'>
+                  Account
+                </Link>
+              ) : (
+                <Link href="/create-account" className="earth-button-primary">
+                  Create Account
+                </Link>
+              )}
+              
 
               <Link href="/shop" className="earth-button-secondary">
                 Explore Collection
@@ -36,10 +41,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="hero-placeholder flex items-center justify-center">
-            <span className="text-lg font-medium text-stone-600">
-              Hero Image Placeholder
-            </span>
+          <div className="hero-placeholder relative flex items-center justify-center min-h-[400px] md:min-h-[500px]">
+            <HeroImage />
           </div>
         </div>
       </section>
@@ -68,10 +71,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </main>
-   
-
-      <Footer />
     </div>
   );
 }
