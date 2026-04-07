@@ -1,0 +1,39 @@
+{
+  "name": "wdd430-group-project",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "seed:products": "node --env-file=.env scripts/seed-products.mjs"
+  },
+  "dependencies": {
+    "@auth/mongodb-adapter": "^3.11.1",
+    "@heroicons/react": "^2.2.0",
+    "bcryptjs": "^3.0.3",
+    "clsx": "^2.1.1",
+    "connect-mongo": "^6.0.0",
+    "mongodb": "^6.0.0",
+    "mongoose": "^9.3.2",
+    "next": "16.2.0",
+    "next-auth": "5.0.0-beta.30",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "cross-env": "^10.1.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
+

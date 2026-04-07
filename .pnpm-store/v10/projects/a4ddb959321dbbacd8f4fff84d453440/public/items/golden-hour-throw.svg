@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none">
+  <rect width="800" height="600" fill="#F7F2E9" />
+  <rect x="70" y="70" width="660" height="460" rx="40" fill="#F1E3C8" />
+  <rect x="170" y="150" width="460" height="300" rx="28" fill="#D6A96F" />
+  <path
+    d="M236 150V450"
+    stroke="#EBC590"
+    stroke-width="10"
+    stroke-dasharray="14 16"
+  />
+  <path
+    d="M302 150V450"
+    stroke="#B7804F"
+    stroke-width="12"
+  />
+  <path
+    d="M382 150V450"
+    stroke="#EBC590"
+    stroke-width="10"
+    stroke-dasharray="14 16"
+  />
+  <path
+    d="M466 150V450"
+    stroke="#B7804F"
+    stroke-width="12"
+  />
+  <path
+    d="M548 150V450"
+    stroke="#EBC590"
+    stroke-width="10"
+    stroke-dasharray="14 16"
+  />
+  <path
+    d="M170 438H630"
+    stroke="#9A633A"
+    stroke-width="10"
+  />
+  <path
+    d="M200 450V492M232 450V500M264 450V490M296 450V502M328 450V492M360 450V500M392 450V490M424 450V502M456 450V492M488 450V500M520 450V490M552 450V502M584 450V492"
+    stroke="#8D5A35"
+    stroke-width="6"
+    stroke-linecap="round"
+  />
+</svg>

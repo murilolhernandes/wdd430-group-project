@@ -1,0 +1,1 @@
+database is not seeded yet. Once that URI/user is corrected, rerun npm run seed:products and the new /shop and /shop/[slug] pages will read the real records.
