@@ -4,10 +4,11 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import dbConnect from '@/app/lib/mongodb';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import { User } from '@/app/lib/models/User';
-import { getMongoClientPromise } from '@/lib/mongodb';
 import bcrypt from 'bcryptjs';
+import { MongoClient } from 'mongodb';
 
-const clientPromise = getMongoClientPromise();
+const client = new MongoClient(process.env.MONGODB_URI!);
+const clientPromise = client.connect();
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: MongoDBAdapter(clientPromise),
