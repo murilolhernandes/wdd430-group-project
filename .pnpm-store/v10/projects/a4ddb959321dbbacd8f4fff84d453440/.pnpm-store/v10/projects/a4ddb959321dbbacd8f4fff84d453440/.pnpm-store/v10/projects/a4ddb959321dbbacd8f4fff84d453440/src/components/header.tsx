@@ -15,7 +15,7 @@ export default function Header({ session }: { session: Session | null }) {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+      router.push(`/shop?q=${encodeURIComponent(query.trim())}`);
       setQuery("");
       setSearchOpen(false);
     }
@@ -112,6 +112,12 @@ export default function Header({ session }: { session: Session | null }) {
               <li>
                 <Link href='/cart' className='nav-link text-sm font-medium'>
                   Cart
+                </Link>
+              </li>
+
+              <li>
+                <Link href="/listing" className='nav-link text-sm font-medium'>
+                  Create Listing
                 </Link>
               </li>
               

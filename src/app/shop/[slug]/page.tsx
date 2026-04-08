@@ -133,6 +133,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   ? `${product.stock} pieces ready to ship`
                   : "Currently unavailable"}
               </p>
+
+              <div className="mt-6">
+                <button
+                  type="button"
+                  className="earth-button-primary inline-flex items-center justify-center px-6 py-3 text-sm"
+                >
+                  Add to cart
+                </button>
+              </div>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">

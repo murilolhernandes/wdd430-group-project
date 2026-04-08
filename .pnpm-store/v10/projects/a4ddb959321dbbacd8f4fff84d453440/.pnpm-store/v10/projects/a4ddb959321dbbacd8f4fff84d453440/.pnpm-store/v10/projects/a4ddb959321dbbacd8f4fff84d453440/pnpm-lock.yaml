@@ -24,7 +24,7 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0(express-session@1.19.0)(mongodb@6.21.0)
       mongodb:
-        specifier: ^6.0.0
+        specifier: ^6.21.0
         version: 6.21.0
       mongoose:
         specifier: ^9.3.2

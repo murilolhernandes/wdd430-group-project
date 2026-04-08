@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "seed:products": "node --env-file=.env scripts/seed-products.mjs"
+    "lint": "eslint"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.11.1",
@@ -15,7 +14,7 @@
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "connect-mongo": "^6.0.0",
-    "mongodb": "^6.0.0",
+    "mongodb": "^6.21.0",
     "mongoose": "^9.3.2",
     "next": "16.2.0",
     "next-auth": "5.0.0-beta.30",
@@ -36,4 +35,3 @@
     "typescript": "^5"
   }
 }
-
