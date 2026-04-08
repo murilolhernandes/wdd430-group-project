@@ -7,7 +7,8 @@ import { User } from '@/app/lib/models/User';
 import bcrypt from 'bcryptjs';
 import { MongoClient } from 'mongodb';
 
-const clientPromise = dbConnect().then((m) => m.connection.getClient() as MongoClient);
+const client = new MongoClient(process.env.MONGODB_URI!);
+const clientPromise = client.connect();
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: MongoDBAdapter(clientPromise),
