@@ -18,7 +18,7 @@ export default function ItemCard({ item }: ItemCardProps) {
   const { addToCart } = useCart();
 
   const handleAddToCart = () => {
-    addToCart(item.name, 1);
+    addToCart(item.slug, 1);
 
     console.log(`Added ${item.name} to cart!`);
   }
