@@ -1,3 +1,6 @@
+'use client'
+
+import { useCart } from '@/components/cart-provider';
 import type { Product } from "@/lib/products";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,6 +15,13 @@ type ItemCardProps = {
 };
 
 export default function ItemCard({ item }: ItemCardProps) {
+  const { addToCart } = useCart();
+
+  const handleAddToCart = () => {
+    addToCart(item.name, 1);
+
+    console.log(`Added ${item.name} to cart!`);
+  }
   return (
     <article className="earth-card relative h-full overflow-hidden transition duration-200 hover:-translate-y-1 hover:shadow-xl">
       <Link
@@ -67,6 +77,7 @@ export default function ItemCard({ item }: ItemCardProps) {
             </span>
 
             <button
+              onClick={handleAddToCart}
               type="button"
               className="earth-button-primary pointer-events-auto px-5 py-2 text-sm"
             >

@@ -1,6 +1,8 @@
 import '@/app/globals.css';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
+import AuthProvider from '@/components/session-provider';
+import { CartProvider } from '@/components/cart-provider';
 import { auth } from '@/auth';
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -41,13 +43,15 @@ export default async function RootLayout({
         className="flex min-h-full flex-col overflow-x-hidden bg-stone-50 text-stone-900 antialiased"
         suppressHydrationWarning
       >
-        <Header session={session}/>
-        
-        <main className='flex-grow'>
-          {children}
-        </main>
+        <AuthProvider>
+          <Header session={session}/>
+          
+          <main className='flex-grow'>
+            <CartProvider>{children}</CartProvider>
+          </main>
 
-        <Footer />
+          <Footer />
+        </AuthProvider>
 
       </body>
     </html>
