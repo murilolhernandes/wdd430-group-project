@@ -8,6 +8,11 @@ import { User } from "@/app/lib/models/User";
 import bcrypt from 'bcryptjs';
 import { redirect } from "next/navigation";
 
+interface DBItem {
+  productId: string;
+  quantity: number;
+}
+
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
@@ -121,4 +126,60 @@ export async function updateAccount(formData: FormData) {
   }
 
   redirect('/account-info?message=Account updated successfully.');
+}
+
+export async function addToCartDB(productId: string, quantity: number) {
+  try {
+    const session = await auth();
+    if (!session?.user?.email) return { error: "Not logged in" };
+
+    await dbConnect();
+    const user = await User.findOne({ email: session.user.email });
+    if (!user) return { error: "User not found" };
+
+    const existingItemIndex = user.cart.findIndex(
+      (item: DBItem) => item.productId === productId
+    );
+
+    if (existingItemIndex > -1) {
+      user.cart[existingItemIndex].quantity += quantity;
+    } else {
+      user.cart.push({ productId, quantity });
+    }
+
+    await user.save();
+    return { success: true, cart: JSON.parse(JSON.stringify(user.cart)) };
+  } catch (error) {
+    console.error("Failed to add to cart:", error);
+    return { error: "Failed to update cart" };
+  }
+}
+
+export async function syncGuestCartToDB(localCartItems: DBItem[]) {
+  try {
+    const session = await auth();
+    if (!session?.user?.email || localCartItems.length === 0) return { success: true };
+
+    await dbConnect();
+    const user = await User.findOne({ email: session.user.email });
+    if (!user) return { error: "User not found" };
+
+    for (const localItem of localCartItems) {
+      const existingItemIndex = user.cart.findIndex(
+        (dbItem: DBItem) => dbItem.productId === localItem.productId
+      );
+
+      if (existingItemIndex > -1) {
+        user.cart[existingItemIndex].quantity += localItem.quantity;
+      } else {
+        user.cart.push(localItem);
+      }
+    }
+
+    await user.save();
+    return { success: true, cart: JSON.parse(JSON.stringify(user.cart)) };
+  } catch (error) {
+    console.error("Failed to sync cart:", error);
+    return { error: "Failed to sync cart" };
+  }
 }
