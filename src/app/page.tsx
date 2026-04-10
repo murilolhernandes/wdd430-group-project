@@ -39,7 +39,7 @@ export default async function Home() {
                 Explore Collection
               </Link>
 
-              <Link href="/listing" className="earth-button-secondary">
+              <Link href="/add-listing" className="earth-button-secondary">
                 Create Product Listing
               </Link>
             </div>

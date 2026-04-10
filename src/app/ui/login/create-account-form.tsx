@@ -15,7 +15,7 @@ import Link from 'next/link';
 
 
 export default function CreateAccountForm() {
-  const [state, formAction, isPending] = useActionState(createAccount, undefined)
+  const [state, formAction, isPending] = useActionState(createAccount, undefined);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);

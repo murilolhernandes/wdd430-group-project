@@ -116,7 +116,7 @@ export default function Header({ session }: { session: Session | null }) {
               </li>
 
               <li>
-                <Link href="/listing" className='nav-link text-sm font-medium'>
+                <Link href="/add-listing" className='nav-link text-sm font-medium'>
                   Create Listing
                 </Link>
               </li>

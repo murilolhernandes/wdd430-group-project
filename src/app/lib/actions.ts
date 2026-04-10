@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { AuthError } from 'next-auth';
 import dbConnect from "@/app/lib/mongodb";
 import { User } from "@/app/lib/models/User";
+import { Product } from "@/app/lib/models/Product";
 import bcrypt from 'bcryptjs';
 import { redirect } from "next/navigation";
 
@@ -182,4 +183,66 @@ export async function syncGuestCartToDB(localCartItems: DBItem[]) {
     console.error("Failed to sync cart:", error);
     return { error: "Failed to sync cart" };
   }
+}
+
+export async function addListing(
+  prevState: { message: string } | undefined,
+  formData: FormData
+) {
+  const slug = formData.get('slug') as string;
+  const artisan = formData.get('artisan') as string;
+  const category = formData.get('category') as string;
+  const description = formData.get('description') as string;
+  const featured = formData.get('featured') as string;
+  const imageAlt = formData.get('imageAlt') as string;
+  // const imageSrc = formData.get('') as string;
+  const material = formData.get('material') as string;
+  const name = formData.get('name') as string;
+  const priceRaw = formData.get('price') as string;
+  const price = parseFloat(priceRaw);
+  const shippingEstimate = formData.get('shippingEstimate') as string;
+  const stockRaw = formData.get('stock') as string;
+  const stock = parseInt(stockRaw, 10);
+
+  const fields = { slug, artisan, category, description, featured, imageAlt, material, name, price, shippingEstimate, stock };
+
+  if (!slug || !artisan || !category || !description || !featured || !imageAlt ||!material || !name || !price || !shippingEstimate || !stock) {
+    return { message: 'All fields are required.', fields };
+  }
+
+  if (isNaN(price) || price < 0) {
+    return { message: "Invalid price" };
+  }
+
+  if (isNaN(stock) || stock < 0) {
+    return { message: "Stock must be a positive number" };
+  }
+
+  try {
+    await dbConnect();
+
+    const existingListing = await Product.findOne({ slug });
+    if (existingListing) {
+      return { message: 'A listing with this slug already exists.', fields };
+    }
+
+    await Product.create({
+      slug,
+      artisan,
+      category,
+      description,
+      featured,
+      imageAlt,
+      material,
+      name,
+      price,
+      shippingEstimate,
+      stock,
+    });
+  } catch (error) {
+    console.error('Failed to add listing: ', error);
+    return { message: 'Database error. Failed to add listing.', fields };
+  }
+
+  redirect('/shop'); // dynamically redirect to the new listing page.
 }
