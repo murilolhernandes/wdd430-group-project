@@ -7,12 +7,23 @@ type FilterBarProps = {
   categories: string[];
   totalCount: number;
   filteredCount: number;
+  priceRange: string;
 };
+
+const PRICE_OPTIONS = [
+  { label: "Any price", value: "" },
+  { label: "Under $25", value: "0-25" },
+  { label: "$25 – $50", value: "25-50" },
+  { label: "$50 – $100", value: "50-100" },
+  { label: "$100 – $200", value: "100-200" },
+  { label: "Over $200", value: "200-0" },
+];
 
 export default function FilterBar({
   categories,
   totalCount,
   filteredCount,
+  priceRange,
 }: FilterBarProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -53,8 +64,8 @@ export default function FilterBar({
   const q = searchParams.get("q") ?? "";
   const category = searchParams.get("category") ?? "";
   const inStock = searchParams.get("inStock") ?? "";
-
-  const hasFilters = q || category || inStock;
+  // priceRange comes from props (server-rendered), not searchParams, to avoid hydration mismatch
+  const hasFilters = q || category || inStock || priceRange;
 
   return (
     <div className="earth-card p-5 space-y-4">
@@ -105,6 +116,19 @@ export default function FilterBar({
           ))}
         </select>
 
+        {/* Price filter */}
+        <select
+          value={priceRange}
+          onChange={(e) => navigate({ q, category, inStock, price: e.target.value })}
+          className="rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-sm text-stone-700 focus:border-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-200"
+        >
+          {PRICE_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+
         {/* In-stock toggle */}
         <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-sm text-stone-700 select-none hover:bg-stone-100">
           <input
@@ -132,7 +156,7 @@ export default function FilterBar({
         {/* Clear filters */}
         {hasFilters && (
           <button
-            onClick={() => navigate({ q: null, category: null, inStock: null })}
+            onClick={() => navigate({ q: null, category: null, inStock: null, price: null })}
             className="text-sm font-medium text-stone-500 underline underline-offset-2 hover:text-stone-800"
           >
             Clear filters
