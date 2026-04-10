@@ -28,7 +28,9 @@ function filterProducts(
     q,
     category,
     inStock,
-  }: { q: string; category: string; inStock: boolean }
+    minPrice,
+    maxPrice,
+  }: { q: string; category: string; inStock: boolean; minPrice: number; maxPrice: number }
 ): Product[] {
   const query = q.trim().toLowerCase();
 
@@ -54,6 +56,10 @@ function filterProducts(
     // In-stock filter
     if (inStock && item.stock <= 0) return false;
 
+    // Price filter
+    if (minPrice > 0 && item.price < minPrice) return false;
+    if (maxPrice > 0 && item.price > maxPrice) return false;
+
     return true;
   });
 }
@@ -69,13 +75,19 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   const q = typeof params.q === "string" ? params.q : "";
   const category = typeof params.category === "string" ? params.category : "";
   const inStock = params.inStock === "1";
+  const priceRange = typeof params.price === "string" ? params.price : "";
 
-  const hasActiveFilters = !!(q || category || inStock);
+  // Parse "min-max" e.g. "0-50", "50-100", "100-0" (0 = unbounded)
+  const [minPrice, maxPrice] = priceRange
+    ? priceRange.split("-").map(Number)
+    : [0, 0];
+
+  const hasActiveFilters = !!(q || category || inStock || priceRange);
 
   const { items, loadError } = await loadCatalog();
 
   const allCategories = [...new Set(items.map((item) => item.category))].sort();
-  const filtered = filterProducts(items, { q, category, inStock });
+  const filtered = filterProducts(items, { q, category, inStock, minPrice, maxPrice });
 
   const categoryCount = new Set(filtered.map((item) => item.category)).size;
   const readyToShipCount = filtered.filter((item) => item.stock > 0).length;
@@ -159,6 +171,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
                 categories={allCategories}
                 totalCount={items.length}
                 filteredCount={filtered.length}
+                priceRange={priceRange}
               />
             </Suspense>
           )}
