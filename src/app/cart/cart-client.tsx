@@ -1,6 +1,9 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
+import {
+  TrashIcon
+} from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/components/cart-provider';
@@ -38,7 +41,7 @@ export default function CartClient({ products }: { products: Product[] }) {
       <section className="section-padding">
         <div className="container-earth space-y-8">
           
-          <div className="max-w-3xl border-b border-stone-200 pb-6">
+          <div className="max-w-3xl text-center border-b border-stone-200 pb-6">
             <h1 className="text-4xl font-bold leading-tight text-stone-800">Your Cart</h1>
             <p className="mt-2 text-stone-600">
               {populatedCart.length === 0 ? "Your cart is currently empty." : `You have ${populatedCart.length} items in your cart.`}
@@ -81,8 +84,11 @@ export default function CartClient({ products }: { products: Product[] }) {
                     </div>
 
 
-                    <div className="text-2xl font-bold text-stone-800 sm:text-right">
+                    <div className="flex flex-col items-center sm:items-end text-2xl font-bold text-stone-800">
                       ${(item.product!.price * item.quantity).toFixed(2)}
+                      <button className="mt-2 text-stone-500 hover:text-red-500 transition-colors">
+                        <TrashIcon className="h-5 w-5" />
+                      </button>
                     </div>
                   </div>
                 ))}
