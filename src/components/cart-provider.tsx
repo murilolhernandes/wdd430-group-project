@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { addToCartDB, syncGuestCartToDB } from '@/app/lib/actions';
+import { addToCartDB, clearCartDB, syncGuestCartToDB } from '@/app/lib/actions';
 
 type CartItem = {
   productId: string;
@@ -12,6 +12,7 @@ type CartItem = {
 type CartContextType = {
   cart: CartItem[];
   addToCart: (productId: string, quantity: number) => Promise<void>;
+  clearCart: () => Promise<void>;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -74,8 +75,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const clearCart = async () => {
+    setCart([]);
+
+    if (status === 'authenticated') {
+      await clearCartDB();
+    }
+
+    localStorage.removeItem('guestCart');
+  };
+
   return (
-    <CartContext.Provider value={{ cart, addToCart }}>
+    <CartContext.Provider value={{ cart, addToCart, clearCart }}>
       {children}
     </CartContext.Provider>
   );

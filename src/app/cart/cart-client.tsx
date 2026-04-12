@@ -49,7 +49,7 @@ export default function CartClient({ products }: { products: Product[] }) {
             <div className="earth-card p-12 text-center">
               <h2 className="text-2xl font-semibold text-stone-800">Nothing here yet!</h2>
               <p className="mt-3 text-stone-600 mb-6">Browse our handcrafted collection to find something you love.</p>
-              <Link href="/shop" className="bg-stone-800 text-white px-6 py-3 rounded-md font-medium hover:bg-stone-700 transition">
+              <Link href="/shop" className="bg-stone-800 !text-white hover:!text-white visited:!text-white focus:!text-white px-6 py-3 rounded-md font-medium hover:bg-stone-700 transition">
                 Return to Shop
               </Link>
             </div>
@@ -109,9 +109,12 @@ export default function CartClient({ products }: { products: Product[] }) {
                     <span className="text-2xl font-bold text-stone-800">${subtotal.toFixed(2)}</span>
                   </div>
 
-                  <button className="w-full bg-stone-800 text-white px-6 py-4 rounded-md font-medium hover:bg-stone-700 transition">
+                  <Link
+                    href="/checkout"
+                    className="block w-full bg-stone-800 text-center !text-white hover:!text-white visited:!text-white focus:!text-white px-6 py-4 rounded-md font-medium hover:bg-stone-700 transition"
+                  >
                     Proceed to Checkout
-                  </button>
+                  </Link>
                 </div>
               </div>
 
