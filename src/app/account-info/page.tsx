@@ -11,12 +11,15 @@ export default async function AccountInfoPage({
 }) {
   const session = await auth();
 
-  if (!session) {
+  if (!session?.user?.email) {
     redirect('/login');
   }
 
   await dbConnect();
-  const user = await User.findOne({ email: session.user.email }).select('-password');
+  
+  const user = await User.findOne({ email: session.user.email })
+    .select('-password')
+    .lean();
 
   if (!user) {
     redirect('/login');
@@ -27,8 +30,12 @@ export default async function AccountInfoPage({
   const error = sp.error as string;
 
   return (
+    // Se quiser centralizar VERTICALMENTE também, mude esta linha abaixo para:
+    // <main className="container-earth section-padding min-h-screen flex flex-col justify-center">
     <main className="container-earth section-padding min-h-screen">
-      <div className="max-w-2xl">
+      
+      {/* CORREÇÃO AQUI: Adicionado mx-auto (centraliza) e w-full (garante que não esprema em telas pequenas) */}
+      <div className="max-w-2xl mx-auto w-full">
         
         <h1 className="text-4xl font-bold mb-2">Account Information</h1>
         <p className="text-[var(--muted-foreground)] mb-10 text-lg">
@@ -45,7 +52,7 @@ export default async function AccountInfoPage({
             <input 
               type="text" 
               name="firstName"
-              defaultValue={user.firstName}
+              defaultValue={user.firstName as string}
               className="earth-input w-full" 
               required
             />
@@ -56,7 +63,7 @@ export default async function AccountInfoPage({
             <input 
               type="text" 
               name="lastName"
-              defaultValue={user.lastName}
+              defaultValue={user.lastName as string}
               className="earth-input w-full" 
               required
             />
@@ -68,7 +75,7 @@ export default async function AccountInfoPage({
               <span className="absolute left-3 text-sm" aria-hidden="true"></span>
               <input 
                 type="email" 
-                defaultValue={user.email}
+                defaultValue={user.email as string}
                 disabled 
                 className="earth-input w-full pl-9 opacity-60 cursor-not-allowed bg-[var(--muted)] text-stone-500" 
               />
@@ -93,7 +100,7 @@ export default async function AccountInfoPage({
             <textarea 
               rows={4} 
               name="bio"
-              defaultValue={user.bio || ''}
+              defaultValue={(user.bio as string) || ''}
               placeholder="Tell your story to your customers..." 
               className="earth-input w-full"
             ></textarea>

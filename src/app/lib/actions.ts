@@ -79,13 +79,41 @@ export async function createAccount(
   redirect('/login');
 }
 
+
+export async function getUserProfile() {
+  try {
+    const session = await auth();
+    
+    if (!session?.user?.email) {
+      return null; 
+    }
+
+    await dbConnect();
+
+    const user = await User.findOne({ email: session.user.email }).lean();
+
+    if (!user) {
+      return null;
+    }
+
+    return {
+      firstName: user.firstName || '',
+      lastName: user.lastName || '',
+      email: user.email,
+      bio: user.bio || '',
+    };
+
+  } catch (error) {
+    console.error('Failed to fetch user profile:', error);
+    return null;
+  }
+}
+
 export async function updateAccount(formData: FormData) {
   const firstName = formData.get('firstName') as string;
   const lastName = formData.get('lastName') as string;
-  const password = formData.get('password') as string;
-  const bio = formData.get('bio') as string;
-
-  const fields = { firstName, lastName, password, bio };
+  const password = formData.get('password') as string | null;
+  const bio = formData.get('bio'); // Mantemos sem "as string" inicialmente para checar null
 
   if (!firstName || !lastName) {
     redirect('/account-info?error=First name and last name are required.');
@@ -98,17 +126,18 @@ export async function updateAccount(formData: FormData) {
     }
 
     await dbConnect();
+    
     const updateData: any = { firstName, lastName };
 
-    if (password) {
+    if (password && password.trim() !== '') {
       if (password.length < 6) {
         redirect('/account-info?error=Password must be at least 6 characters long.');
       }
       updateData.password = await bcrypt.hash(password, 10);
     }
 
-    if (bio !== undefined) {
-      updateData.bio = bio;
+    if (bio !== null) {
+      updateData.bio = bio as string;
     }
 
     await User.findOneAndUpdate({ email: session.user.email }, updateData);
