@@ -2,7 +2,8 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { addToCartDB, syncGuestCartToDB } from '@/app/lib/actions';
+import { addToCartDB, syncGuestCartToDB, removeFromCartDB } from '@/app/lib/actions';
+// import { addToCartDB, syncGuestCartToDB } from '@/app/lib/actions';
 
 type CartItem = {
   productId: string;
@@ -12,6 +13,7 @@ type CartItem = {
 type CartContextType = {
   cart: CartItem[];
   addToCart: (productId: string, quantity: number) => Promise<void>;
+  removeFromCart: (productId: string) => Promise<void>;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -74,8 +76,37 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const removeFromCart = async (productId: string) => {
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => item.productId === productId);
+      if (!existingItem) return prevCart;
+
+      if (existingItem.quantity > 1) {
+        return prevCart.map((item) => item.productId === productId ? { ...item, quantity: item.quantity - 1} : item);
+      } else {
+        return prevCart.filter((item) => item.productId !== productId);
+      }
+    });
+
+    if (status === 'authenticated') {
+      await removeFromCartDB(productId, 1);
+    } else {
+      const currentCart = JSON.parse(localStorage.getItem('guestCart') || '[]');
+      const existingItemIndex = currentCart.findIndex((item: CartItem) => item.productId === productId);
+
+      if (existingItemIndex > -1) {
+        if (currentCart[existingItemIndex].quantity > 1) {
+          currentCart[existingItemIndex].quantity -= 1;
+        } else {
+          currentCart.splice(existingItemIndex, 1);
+        }
+        localStorage.setItem('guestCart', JSON.stringify(currentCart));
+      }
+    }
+  };
+
   return (
-    <CartContext.Provider value={{ cart, addToCart }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
       {children}
     </CartContext.Provider>
   );

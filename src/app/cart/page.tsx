@@ -4,8 +4,12 @@ import CartClient from "./cart-client";
 export const dynamic = 'force-dynamic'; 
 
 export default async function CartPage() {
-
   const products = await getProducts();
-
-  return <CartClient products={products} />;
+    return (
+      <div>
+        <CartClient products={products} />;
+      </div>
+    );
 }
+
+// Gotta fix the background color

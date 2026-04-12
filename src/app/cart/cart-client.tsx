@@ -2,15 +2,17 @@
 
 import React, { useEffect, useState } from 'react';
 import {
+  MinusIcon,
   TrashIcon
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/components/cart-provider';
 import type { Product } from '@/lib/products';
+import { removeFromCartDB } from '../lib/actions';
 
 export default function CartClient({ products }: { products: Product[] }) {
-  const { cart } = useCart();
+  const { cart, removeFromCart } = useCart();
   const [mounted, setMounted] = useState(false);
 
 
@@ -86,8 +88,16 @@ export default function CartClient({ products }: { products: Product[] }) {
 
                     <div className="flex flex-col items-center sm:items-end text-2xl font-bold text-stone-800">
                       ${(item.product!.price * item.quantity).toFixed(2)}
-                      <button className="mt-2 text-stone-500 hover:text-red-500 transition-colors">
-                        <TrashIcon className="h-5 w-5" />
+                      <button 
+                        onClick={() => removeFromCart(item.productId)} 
+                        className="mt-2 text-stone-500 hover:text-red-500 transition-colors"
+                        aria-label="Decrease quantity"
+                      >
+                        {item.quantity > 1 ? (
+                          <MinusIcon className="h-5 w-5" /> 
+                        ) : (
+                          <TrashIcon className="h-5 w-5" />
+                        )}
                       </button>
                     </div>
                   </div>

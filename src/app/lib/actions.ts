@@ -151,8 +151,8 @@ export async function addToCartDB(productId: string, quantity: number) {
     await user.save();
     return { success: true, cart: JSON.parse(JSON.stringify(user.cart)) };
   } catch (error) {
-    console.error("Failed to add to cart:", error);
-    return { error: "Failed to update cart" };
+    console.error("Failed to add to cart: ", error);
+    return { error: "Failed to update cart." };
   }
 }
 
@@ -185,6 +185,36 @@ export async function syncGuestCartToDB(localCartItems: DBItem[]) {
   }
 }
 
+export async function removeFromCartDB(productId: string, quantityToRemove: number = 1) {
+  try {
+    const session = await auth();
+    if (!session?.user?.email) return { error: "Not logged in" };
+
+    await dbConnect();
+    const user = await User.findOne({ email: session.user.email });
+    if (!user) return { error: "User not found" };
+
+    const existingItemIndex = user.cart.findIndex(
+      (item: DBItem) => item.productId === productId
+    );
+
+    if (existingItemIndex > -1) {
+      user.cart[existingItemIndex].quantity -= quantityToRemove;
+      
+      if (user.cart[existingItemIndex].quantity <= 0) {
+        user.cart.splice(existingItemIndex, 1);
+      }
+
+      user.markModified('cart'); 
+    }
+
+    await user.save();
+    return { success: true, cart: JSON.parse(JSON.stringify(user.cart)) };
+  } catch (error) {
+    console.error("Failed to remove product from cart: ", error);
+    return { error: "Failed to update cart." };
+  }
+}
 export async function addListing(
   prevState: { message: string } | undefined,
   formData: FormData
