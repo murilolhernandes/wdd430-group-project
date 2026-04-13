@@ -215,6 +215,23 @@ export async function removeFromCartDB(productId: string, quantityToRemove: numb
     return { error: "Failed to update cart." };
   }
 }
+
+export async function getCartDB() {
+  try {
+    const session = await auth();
+    if (!session?.user?.email) return { error: "Not logged in." };
+
+    await dbConnect();
+    const user = await User.findOne({ email: session.user.email });
+    if (!user) return { error: "User not found" };
+
+    return { success: true, cart: JSON.parse(JSON.stringify(user.cart)) };
+  } catch (error) {
+    console.error("Failed to fetch cart: ", error);
+    return { error: "Failed to fetch cart." };
+  }
+}
+
 export async function addListing(
   prevState: { message: string } | undefined,
   formData: FormData

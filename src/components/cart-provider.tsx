@@ -2,8 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { addToCartDB, syncGuestCartToDB, removeFromCartDB } from '@/app/lib/actions';
-// import { addToCartDB, syncGuestCartToDB } from '@/app/lib/actions';
+import { addToCartDB, syncGuestCartToDB, removeFromCartDB, getCartDB } from '@/app/lib/actions';
 
 type CartItem = {
   productId: string;
@@ -23,30 +22,34 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
 
   useEffect(() => {
-    const savedCart = localStorage.getItem('guestCart');
-    if (savedCart && status === 'unauthenticated') {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setCart(JSON.parse(savedCart));
-    }
-  }, [status]);
+    if (status === 'loading') return;
 
-  useEffect(() => {
     const syncCart = async () => {
       const savedCart = localStorage.getItem('guestCart');
+
       if (status === 'authenticated' && savedCart) {
         const localCartItems = JSON.parse(savedCart);
         if (localCartItems.length > 0) {
           const result = await syncGuestCartToDB(localCartItems);
-          if (result.success && result.cart) {
-             setCart(result.cart);
+          if (result?.success && result?.cart) {
+            setCart(result.cart);
           }
         }
         localStorage.removeItem('guestCart');
+      } else if (status === 'unauthenticated' && savedCart) {
+        try {
+          setCart(JSON.parse(savedCart));
+        } catch (error) {
+          console.error("Failed to parse cart data", error);
+        }
       } else if (status === 'authenticated') {
-         // Optionally: Fetch the user's cart from DB here if localStorage was empty
-         // to populate the initial state for logged-in users.
+        const result = await getCartDB();
+        if (result?.success && result?.cart) {
+          setCart(result.cart);
+        }
       }
     };
+
     syncCart();
   }, [status]);
 
