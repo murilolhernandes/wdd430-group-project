@@ -8,6 +8,7 @@ import { User } from "@/app/lib/models/User";
 import { Product } from "@/app/lib/models/Product";
 import bcrypt from 'bcryptjs';
 import { redirect } from "next/navigation";
+// import { Update } from "next/dist/build/swc/types";
 
 interface DBItem {
   productId: string;
@@ -85,30 +86,54 @@ export async function createAccount(
   redirect('/login');
 }
 
-export async function updateAccount(formData: FormData) {
+export type UpdateAccountState = {
+  message: string;
+  fields?: {
+    firstName?: string,
+    lastName?: string,
+    bio?: string;
+  };
+};
+
+export async function updateAccount(
+  prevState: UpdateAccountState | undefined,
+  formData: FormData
+) {
   const firstName = formData.get('firstName') as string;
   const lastName = formData.get('lastName') as string;
   const password = formData.get('password') as string;
   const bio = formData.get('bio') as string;
 
-  const fields = { firstName, lastName, password, bio };
+  const fields = { firstName, lastName, bio };
 
-  if (!firstName || !lastName) {
-    redirect('/account-info?error=First name and last name are required.');
+  if (!firstName) {
+    return { message: 'First name is required.', fields };
+  }
+
+  if (!lastName) {
+    return { message: 'Last name is required.', fields };
   }
 
   try {
     const session = await auth();
     if (!session?.user?.email) {
-      redirect('/account-info?error=Unauthorized.');
+      return { message: 'Unauthorized.', fields };
     }
 
     await dbConnect();
-    const updateData: any = { firstName, lastName };
+
+    interface UpdateData {
+      firstName: string;
+      lastName: string;
+      password?: string;
+      bio?: string;
+    }
+
+    const updateData: UpdateData = { firstName, lastName };
 
     if (password) {
       if (password.length < 6) {
-        redirect('/account-info?error=Password must be at least 6 characters long.');
+        return { message: 'Password must be at least 6 characters long.', fields};
       }
       updateData.password = await bcrypt.hash(password, 10);
     }
@@ -118,12 +143,15 @@ export async function updateAccount(formData: FormData) {
     }
 
     await User.findOneAndUpdate({ email: session.user.email }, updateData);
-  } catch (error: any) {
-    if (error.digest === 'NEXT_REDIRECT') {
+  } catch (error: unknown) {
+    if (error && typeof error === 'object' && 
+      'digest'in error && 
+      error.digest === 'NEXT_REDIRECT'
+    ) {
       throw error;
     }
     console.error('Failed to update account: ', error);
-    redirect('/account-info?error=Database error. Failed to update account.');
+    return { message: 'Database error. Failed to update account.', fields };
   }
 
   redirect('/account-info?message=Account updated successfully.');

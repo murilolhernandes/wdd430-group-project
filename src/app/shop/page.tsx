@@ -3,6 +3,11 @@ import FilterBar from '@/components/filter-bar';
 import { getProducts, type Product } from '@/app/lib/products';
 import { connection } from 'next/server';
 import { Suspense } from 'react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Shop',
+};
 
 type CatalogLoadResult = {
   items: Product[];
