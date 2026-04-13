@@ -321,3 +321,22 @@ export async function addListing(
 
   redirect('/shop'); // dynamically redirect to the new listing page.
 }
+
+export async function clearCartDB() {
+  try {
+    const session = await auth();
+    if (!session?.user?.email) return { error: "Not logged in" };
+
+    await dbConnect();
+    const user = await User.findOne({ email: session.user.email });
+    if (!user) return { error: "User not found" };
+
+    user.cart = [];
+    await user.save();
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to clear cart:", error);
+    return { error: "Failed to clear cart" };
+  }
+}
