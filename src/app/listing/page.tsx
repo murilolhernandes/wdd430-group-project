@@ -16,14 +16,15 @@ export default async function AddListingPage() {
   }
 
   return (
-    <div className='flex w-full items-center justify-center p-4 py-16 md:py-24'>
-      <div className='flex w-full max-w-5xl flex-col items-center gap-8 md:flex-row md:items-stretch md:gap-12'>
-        <div className="flex w-full max-w-[450px] flex-col justify-center md:w-1/2">
-          <Suspense fallback={<div>Loading form...</div>}>
-            <AddListingForm />
-          </Suspense>
-        </div>
-      </div >
+    <div className="container-earth section-padding min-h-screen">
+      <div className="max-w-2xl mx-auto">
+        <h1 className='text-4xl font-bold mb-10 text-center'>
+          Create a Product Listing!
+        </h1>
+        <Suspense fallback={<div>Loading form...</div>}>
+          <AddListingForm />
+        </Suspense>
+      </div>
     </div>
   );
 }

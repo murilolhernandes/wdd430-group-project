@@ -36,8 +36,8 @@ export default async function AccountInfoPage({
     <div className="container-earth section-padding min-h-screen">
       <div className="max-w-2xl mx-auto">
         
-        <h1 className="text-4xl font-bold mb-2">Account Information</h1>
-        <p className="text-[var(--muted-foreground)] mb-10 text-lg">
+        <h1 className="text-4xl font-bold mb-2 text-center">Account Information</h1>
+        <p className="text-[var(--muted-foreground)] mb-10 text-lg text-center">
           Update your personal details and manage your artisan profile.
         </p>
 

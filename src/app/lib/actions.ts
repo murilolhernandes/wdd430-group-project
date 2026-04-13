@@ -8,7 +8,8 @@ import { User } from "@/app/lib/models/User";
 import { Product } from "@/app/lib/models/Product";
 import bcrypt from 'bcryptjs';
 import { redirect } from "next/navigation";
-// import { Update } from "next/dist/build/swc/types";
+import { writeFile } from 'fs/promises';
+import path from 'path';
 
 interface DBItem {
   productId: string;
@@ -264,13 +265,27 @@ export async function addListing(
   prevState: { message: string } | undefined,
   formData: FormData
 ) {
+  const session = await auth();
+  
+  if (!session?.user?.email) {
+    return { message: "You must be logged in to create a listing." };
+  }
+
+  const user = await User.findOne({ email: session.user.email });
+  if (!user) {
+    return { message: 'User account not found.' };
+  }
+
+  const artisan = `${user.firstName} ${user.lastName}`;
+
+  const featured = false;
+
+
   const slug = formData.get('slug') as string;
-  const artisan = formData.get('artisan') as string;
-  const category = formData.get('category') as string;
+  const categoryRaw = formData.get('category') as string;
+  const category = categoryRaw.charAt(0).toUpperCase() + categoryRaw.slice(1);;
   const description = formData.get('description') as string;
-  const featured = formData.get('featured') as string;
   const imageAlt = formData.get('imageAlt') as string;
-  // const imageSrc = formData.get('') as string;
   const material = formData.get('material') as string;
   const name = formData.get('name') as string;
   const priceRaw = formData.get('price') as string;
@@ -279,18 +294,42 @@ export async function addListing(
   const stockRaw = formData.get('stock') as string;
   const stock = parseInt(stockRaw, 10);
 
-  const fields = { slug, artisan, category, description, featured, imageAlt, material, name, price, shippingEstimate, stock };
+  const imageFile = formData.get('imageSrc') as File;
+  let imagePathForDb = '';
 
-  if (!slug || !artisan || !category || !description || !featured || !imageAlt ||!material || !name || !price || !shippingEstimate || !stock) {
+  const fields = { slug, category, description, imageAlt, material, name, price, shippingEstimate, stock };
+
+  if (!imageFile || imageFile.size === 0) {
+    return { message: 'An image file is required.', fields}
+  }
+
+  try {
+    const buffer = Buffer.from(await imageFile.arrayBuffer());
+
+    const filename = `${Date.now()}-${imageFile.name.replaceAll(' ', '-')}`;
+
+    const uploadDir = path.join(process.cwd(), 'public', 'items');
+    const filePath = path.join(uploadDir, filename);
+
+    await writeFile(filePath, buffer);
+
+    imagePathForDb = `/items/${filename}`;
+
+  } catch (error) {
+    console.error("Error saving file:", error);
+    return { message: 'Failed to upload image.' };
+  }
+
+  if (!slug || !category || !description || !imageAlt || !material || !name || !price || !shippingEstimate || !stock) {
     return { message: 'All fields are required.', fields };
   }
 
   if (isNaN(price) || price < 0) {
-    return { message: "Invalid price" };
+    return { message: "Invalid price", fields };
   }
 
   if (isNaN(stock) || stock < 0) {
-    return { message: "Stock must be a positive number" };
+    return { message: "Stock must be a positive number", fields };
   }
 
   try {
@@ -298,7 +337,7 @@ export async function addListing(
 
     const existingListing = await Product.findOne({ slug });
     if (existingListing) {
-      return { message: 'A listing with this slug already exists.', fields };
+      return { message: 'A listing with this slug already exists. Please choose a different slug.', fields };
     }
 
     await Product.create({
@@ -308,6 +347,7 @@ export async function addListing(
       description,
       featured,
       imageAlt,
+      imageSrc: imagePathForDb,
       material,
       name,
       price,
@@ -319,7 +359,7 @@ export async function addListing(
     return { message: 'Database error. Failed to add listing.', fields };
   }
 
-  redirect('/shop'); // dynamically redirect to the new listing page.
+  redirect(`/shop/${slug}`);
 }
 
 export async function clearCartDB() {
