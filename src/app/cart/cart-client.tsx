@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import {
-  MinusIcon,
+  MinusCircleIcon,
   TrashIcon
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
@@ -43,6 +43,7 @@ export default function CartClient({ products }: { products: Product[] }) {
       <section className="section-padding">
         <div className="container-earth space-y-8">
           
+          {/* fix the Your Cart div to be centralized */}
           <div className="max-w-3xl text-center border-b border-stone-200 pb-6">
             <h1 className="text-4xl font-bold leading-tight text-stone-800">Your Cart</h1>
             <p className="mt-2 text-stone-600">
@@ -94,7 +95,7 @@ export default function CartClient({ products }: { products: Product[] }) {
                         aria-label="Decrease quantity"
                       >
                         {item.quantity > 1 ? (
-                          <MinusIcon className="h-5 w-5" /> 
+                          <MinusCircleIcon className="h-5 w-5" /> // I don't like this icon
                         ) : (
                           <TrashIcon className="h-5 w-5" />
                         )}

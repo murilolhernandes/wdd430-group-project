@@ -1,4 +1,5 @@
 import { getProductBySlug, type Product } from "@/lib/products";
+import AddToCartButton from "@/components/add-to-cart";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -135,12 +136,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </p>
 
               <div className="mt-6">
-                <button
-                  type="button"
-                  className="earth-button-primary inline-flex items-center justify-center px-6 py-3 text-sm"
-                >
-                  Add to cart
-                </button>
+                <AddToCartButton slug={slug} productName={product.name} />
               </div>
             </div>
 
