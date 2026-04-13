@@ -15,7 +15,15 @@ type Listing = {
   slug: string;
 };
 
-export default function UserListings({ initialProducts }: { initialProducts: Listing[] }) {
+export default function UserListings({ 
+  initialProducts,
+  title = "Your Product Listings",
+  subtitle = "Manage your active inventory"
+}: { 
+  initialProducts: Listing[],
+  title?: string;
+  subtitle?: string;
+}) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
@@ -34,8 +42,8 @@ export default function UserListings({ initialProducts }: { initialProducts: Lis
         className="flex w-full items-center justify-between outline-none"
       >
         <div className="text-left">
-          <h2 className="text-xl font-bold text-stone-900">Your Product Listings</h2>
-          <p className="text-sm text-stone-500 mt-1">Manage your active inventory ({initialProducts.length} items)</p>
+          <h2 className="text-xl font-bold text-stone-900">{title}</h2>
+          <p className="text-sm text-stone-500 mt-1">{subtitle} ({initialProducts.length} items)</p>
         </div>
         {isExpanded ? (
           <ChevronUpIcon className="h-6 w-6 text-stone-500" />

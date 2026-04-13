@@ -32,12 +32,17 @@ export default async function AccountInfoPage({
   const artisanName = `${user.firstName} ${user.lastName}`
 
   const userProducts = await Product.find({ artisan: artisanName }).sort({ createdAt: -1 });
+  const plainProducts = JSON.parse(JSON.stringify(userProducts));
+
+  let adminProducts: any[] = [];
+  if (user.role === "admin") {
+    const otherProducts = await Product.find({ artisan: { $ne: artisanName } }).sort({ createdAt: -1});
+    adminProducts = JSON.parse(JSON.stringify(otherProducts));
+  }
 
   const sp = await searchParams;
   const message = sp.message as string;
-
   const plainUser = JSON.parse(JSON.stringify(user));
-  const plainProducts = JSON.parse(JSON.stringify(userProducts));
 
   return (
     <div className="container-earth section-padding min-h-screen">
@@ -48,7 +53,7 @@ export default async function AccountInfoPage({
           Update your personal details and manage your artisan profile.
         </p>
 
-        {message && <p className="mb-4 text-green-500">{message}</p>}
+        {message && <p className="mb-4 text-green-500 text-center">{message}</p>}
 
         <UpdateAccountForm user={plainUser} />
 
@@ -56,6 +61,15 @@ export default async function AccountInfoPage({
           <UserListings initialProducts={plainProducts} />
         </div>
 
+        {user.role === "admin" && (
+          <div className="mt-8">
+            <UserListings
+              title="All Marketplace Listings (Admin)"
+              subtitle="Edit or remove items from other artisans"
+              initialProducts={adminProducts}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

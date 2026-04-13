@@ -321,7 +321,7 @@ export async function addListing(
     return { message: 'Failed to upload image.' };
   }
 
-  if (!slug || !category || !description || !imageAlt || !material || !name || !price || !shippingEstimate || !stock) {
+  if (!slug || !category || !description || !imageAlt || !material || !name || !shippingEstimate) {
     return { message: 'All fields are required.', fields };
   }
 
@@ -363,16 +363,104 @@ export async function addListing(
   redirect(`/shop/${slug}`);
 }
 
-// export async function updateListing(
-//   prevState: { message: string } | undefined,
-//   formData: FormData
-// ) {
-//   const session = await auth();
+export type ListingFormState = {
+  message?: string;
+  error?: string;
+  fields?: Record<string, string | number>;
+} | undefined;
 
-//   if(!session?.user?.email) {
-//     return { error: "You must be logged in to delete a listing." };
-//   }
-// }
+export async function updateListing(
+  productId: string,
+  existingImageSrc: string,
+  prevState: ListingFormState,
+  formData: FormData
+) : Promise<ListingFormState> {
+  const session = await auth();
+
+  if(!session?.user?.email) {
+    return { error: "You must be logged in to delete a listing." };
+  }
+
+  try {
+    await dbConnect();
+
+    const user = await User.findOne({ email: session.user.email });
+    if (!user) return { message: 'User account not found.' };
+    const artisanName = `${user.firstName} ${user.lastName}`;
+    const isAdmin = user.role === "admin";
+
+    const existingProduct = await Product.findById(productId);
+    if (!existingProduct) return { message: 'Listing not found.' };
+
+    if (!isAdmin && existingProduct.artisan !== artisanName) {
+      return { message: 'You do not have permission to edit this listing.' };
+    }
+
+    const formArtisan = formData.get('artisan') as string;
+    const finalArtisan = isAdmin && formArtisan ? formArtisan : existingProduct.artisan;
+
+    const slug = formData.get('slug') as string;
+    const categoryRaw = formData.get('category') as string;
+    const category = categoryRaw.charAt(0).toUpperCase() + categoryRaw.slice(1);;
+    const description = formData.get('description') as string;
+    const imageAlt = formData.get('imageAlt') as string;
+    const material = formData.get('material') as string;
+    const name = formData.get('name') as string;
+    const priceRaw = formData.get('price') as string;
+    const price = parseFloat(priceRaw);
+    const shippingEstimate = formData.get('shippingEstimate') as string;
+    const stockRaw = formData.get('stock') as string;
+    const stock = parseInt(stockRaw, 10);
+
+    const imageFile = formData.get('imageSrc') as File | null;
+    let imagePathForDb = existingImageSrc;
+
+    if (imageFile && imageFile.size > 0) {
+      const buffer = Buffer.from(await imageFile.arrayBuffer());
+
+      const filename = `${Date.now()}-${imageFile.name.replaceAll(' ', '-')}`;
+
+      const uploadDir = path.join(process.cwd(), 'public', 'items');
+      const filePath = path.join(uploadDir, filename);
+
+      await writeFile(filePath, buffer);
+
+      imagePathForDb = `/items/${filename}`;
+    }
+
+    if (!slug || !category || !description || !imageAlt || !material || !name || !shippingEstimate) {
+      return { message: 'All fields are required.' };
+    }
+
+    if (isNaN(price) || price < 0) {
+      return { message: "Invalid price" };
+    }
+
+    if (isNaN(stock) || stock < 0) {
+      return { message: "Stock must be a positive number" };
+    }
+
+    await Product.findByIdAndUpdate(productId, {
+      slug,
+      artisan: finalArtisan,
+      category,
+      description,
+      imageAlt,
+      imageSrc: imagePathForDb,
+      material,
+      name,
+      price,
+      shippingEstimate,
+      stock,
+    });
+
+  } catch (error) {
+    console.error("Failed to update listing: ", error);
+    return { message: 'Database error. Failed to update listing.' };
+  }
+
+  redirect('/account-info?message=Listing updated successfully.');
+}
 
 export async function deleteListing(productId: string) {
   const session = await auth();
@@ -383,6 +471,14 @@ export async function deleteListing(productId: string) {
 
   try {
     await dbConnect();
+    const user = await User.findOne({ email: session.user.email });
+    const existingProduct = await Product.findByIdAndDelete(productId);
+
+    const isAdmin = user.role === 'Admin';
+
+    if (!isAdmin && existingProduct.artisan !== `${user.firstName} ${user.lastName}`) {
+      return { error: "Unauthorized to delete this listing." };
+    }
 
     await Product.findByIdAndDelete(productId);
 

@@ -76,8 +76,8 @@ export default function AddListingForm() {
           </label>
           <div className='relative'>
             <input
-              className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
-              id='imageSrc' type='file' name='imageSrc' placeholder='Enter the image of the product. (E.g. "Something")' required
+              className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-stone-100 file:text-stone-700 hover:file:bg-stone-200'
+              id='imageSrc' type='file' name='imageSrc' required
               accept='image/jpeg, image/png, image/webp, image/svg+xml, image/svg'
               />
             <PhotoIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
@@ -111,18 +111,34 @@ export default function AddListingForm() {
             <CubeIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
           </div>
         </div>
-        <div>
-          <label className='mb-3 mt-5 block text-xs font-semibold uppercase tracking-wider text-stone-500' htmlFor='price'>
-            Price
-          </label>
-          <div className='relative'>
-            <input
-              className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
-              id='price' type='number' name='price' placeholder='Enter the price of the product. (E.g. "48")' required
-              defaultValue={state?.fields?.name || ''}
-              // value="64"
-              />
-            <CurrencyDollarIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className='mb-3 mt-5 block text-xs font-semibold uppercase tracking-wider text-stone-500' htmlFor='price'>
+              Price
+            </label>
+            <div className='relative'>
+              <input
+                className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
+                id='price' type='number' name='price' placeholder='Enter the price of the product. (E.g. "48")' required
+                defaultValue={state?.fields?.name || ''}
+                // value="64"
+                />
+              <CurrencyDollarIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
+            </div>
+          </div>
+          <div>
+            <label className='mb-3 mt-5 block text-xs font-semibold uppercase tracking-wider text-stone-500' htmlFor='stock'>
+              Stock
+            </label>
+            <div className='relative'>
+              <input
+                className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
+                id='stock' type='number' name='stock' placeholder='Enter the stock quantity of the product. (E.g. "7")' required
+                defaultValue={state?.fields?.material || ''}
+                // value="5"
+                />
+              <CircleStackIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
+            </div>
           </div>
         </div>
         <div>
@@ -137,20 +153,6 @@ export default function AddListingForm() {
               // value="Ships in 3-5 business days"
               />
             <TruckIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
-          </div>
-        </div>
-        <div>
-          <label className='mb-3 mt-5 block text-xs font-semibold uppercase tracking-wider text-stone-500' htmlFor='stock'>
-            Stock
-          </label>
-          <div className='relative'>
-            <input
-              className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
-              id='stock' type='number' name='stock' placeholder='Enter the stock quantity of the product. (E.g. "7")' required
-              defaultValue={state?.fields?.material || ''}
-              // value="5"
-              />
-            <CircleStackIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
           </div>
         </div>
         <div className="flex gap-4 pt-4">
