@@ -30,11 +30,10 @@ export default async function AccountInfoPage({
   const error = sp.error as string;
 
   return (
-    // Se quiser centralizar VERTICALMENTE também, mude esta linha abaixo para:
-    // <main className="container-earth section-padding min-h-screen flex flex-col justify-center">
+    
     <main className="container-earth section-padding min-h-screen">
       
-      {/* CORREÇÃO AQUI: Adicionado mx-auto (centraliza) e w-full (garante que não esprema em telas pequenas) */}
+      
       <div className="max-w-2xl mx-auto w-full">
         
         <h1 className="text-4xl font-bold mb-2">Account Information</h1>
