@@ -10,6 +10,7 @@ import bcrypt from 'bcryptjs';
 import { redirect } from "next/navigation";
 import { writeFile } from 'fs/promises';
 import path from 'path';
+import { revalidatePath } from "next/cache";
 
 interface DBItem {
   productId: string;
@@ -360,6 +361,39 @@ export async function addListing(
   }
 
   redirect(`/shop/${slug}`);
+}
+
+// export async function updateListing(
+//   prevState: { message: string } | undefined,
+//   formData: FormData
+// ) {
+//   const session = await auth();
+
+//   if(!session?.user?.email) {
+//     return { error: "You must be logged in to delete a listing." };
+//   }
+// }
+
+export async function deleteListing(productId: string) {
+  const session = await auth();
+
+  if(!session?.user?.email) {
+    return { error: "You must be logged in to delete a listing." };
+  }
+
+  try {
+    await dbConnect();
+
+    await Product.findByIdAndDelete(productId);
+
+    revalidatePath('/account-info');
+    revalidatePath('/shop');
+
+    return { success: true};
+  } catch (error) {
+    console.error("Failed to delete listing: ", error);
+    return { error: "Failed to delete listing." };
+  }
 }
 
 export async function clearCartDB() {

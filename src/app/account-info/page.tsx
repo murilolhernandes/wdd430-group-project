@@ -2,8 +2,10 @@ import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import dbConnect from '@/app/lib/mongodb';
 import { User } from '@/app/lib/models/User';
+import { Product } from '../lib/models/Product';
 import { Metadata } from 'next';
 import UpdateAccountForm from '@/components/update-account-form';
+import UserListings from "@/components/user-listings";
 
 export const metadata: Metadata = {
   title: 'Account',
@@ -27,10 +29,15 @@ export default async function AccountInfoPage({
     redirect('/login');
   }
 
+  const artisanName = `${user.firstName} ${user.lastName}`
+
+  const userProducts = await Product.find({ artisan: artisanName }).sort({ createdAt: -1 });
+
   const sp = await searchParams;
   const message = sp.message as string;
 
   const plainUser = JSON.parse(JSON.stringify(user));
+  const plainProducts = JSON.parse(JSON.stringify(userProducts));
 
   return (
     <div className="container-earth section-padding min-h-screen">
@@ -44,6 +51,10 @@ export default async function AccountInfoPage({
         {message && <p className="mb-4 text-green-500">{message}</p>}
 
         <UpdateAccountForm user={plainUser} />
+
+        <div className="mt-16 pt-8 border-t border-stone-200">
+          <UserListings initialProducts={plainProducts} />
+        </div>
 
       </div>
     </div>
