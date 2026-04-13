@@ -16,7 +16,7 @@ export default function CheckoutClient({ products }: { products: Product[] }) {
     fullName: '',
     email: '',
     cardNumber: '',
-    expiry: '',
+    expirationDate: '',
     cvv: ''
   });
 
@@ -64,7 +64,7 @@ export default function CheckoutClient({ products }: { products: Product[] }) {
     formData.fullName.trim() === '' ||
     formData.email.trim() === '' ||
     formData.cardNumber.trim() === '' ||
-    formData.expiry.trim() === '' ||
+    formData.expirationDate.trim() === '' ||
     formData.cvv.trim() === '';
 
   if (checkoutState === 'success') {
@@ -106,7 +106,7 @@ export default function CheckoutClient({ products }: { products: Product[] }) {
               <div className="earth-card p-8 text-center">
                 <h2 className="text-2xl font-semibold text-stone-800">Your cart is empty</h2>
                 <p className="mt-3 text-stone-600">Add products before proceeding to checkout.</p>
-                <Link href="/shop" className="mt-6 inline-block rounded-md bg-stone-800 px-6 py-3 font-medium text-white transition hover:bg-stone-700">
+                <Link href="/shop" className="mt-6 inline-block rounded-md bg-stone-800 px-6 py-3 font-medium !text-white transition hover:bg-stone-700">
                   Go to Shop
                 </Link>
               </div>
@@ -149,12 +149,12 @@ export default function CheckoutClient({ products }: { products: Product[] }) {
 
                 <div className="grid grid-cols-2 gap-4">
                   <label className="block">
-                    <span className="mb-2 block text-sm font-medium text-stone-700">Expiry</span>
+                    <span className="mb-2 block text-sm font-medium text-stone-700">Expiration Date</span>
                     <input
                       type="text"
                       placeholder="MM/YY"
-                      value={formData.expiry}
-                      onChange={(event) => setFormData((prev) => ({ ...prev, expiry: event.target.value }))}
+                      value={formData.expirationDate}
+                      onChange={(event) => setFormData((prev) => ({ ...prev, expirationDate: event.target.value }))}
                       className="w-full rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800 outline-none ring-offset-2 focus:border-stone-500 focus:ring-2 focus:ring-stone-300"
                       required
                     />
