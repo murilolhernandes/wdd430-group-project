@@ -1,5 +1,10 @@
 import { getProducts } from '@/app/lib/products';
 import CartClient from './cart-client';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Cart',
+};
 
 export const dynamic = 'force-dynamic';
 

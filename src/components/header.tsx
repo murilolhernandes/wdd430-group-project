@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { signOut } from 'next-auth/react';
 import type { Session } from 'next-auth';
+import { useCart } from './cart-provider';
 
 export default function Header({ session }: { session: Session | null }) {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -12,6 +13,28 @@ export default function Header({ session }: { session: Session | null }) {
   const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+
+  const { cart } = useCart();
+  const [isCartWiggling, setIsCartWiggling] = useState(false);
+
+  const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+
+  useEffect(() => {
+    if (totalItems === 0) return;
+
+    const animationFrame = requestAnimationFrame(() => {
+      setIsCartWiggling(true);
+    });
+
+    const timer = setTimeout(() => {
+      setIsCartWiggling(false);
+    }, 300);
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      clearTimeout(timer);
+    };
+  }, [totalItems]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -115,8 +138,15 @@ export default function Header({ session }: { session: Session | null }) {
           <nav className="hidden md:block">
             <ul className="flex items-center gap-3 md:gap-4">
               <li>
-                <Link href="/cart" className="nav-link text-sm font-medium">
-                  Cart
+                <Link href="/cart" className={`nav-link text-sm font-medium inline-block transition-transform ${
+                    isCartWiggling ? 'cart-pop' : ''
+                  }`}
+                  >
+                  Cart {totalItems > 0 && (
+                    <span className="ml-1 rounded-full bg-stone-800 px-2 py-0.5 text-[10px] text-white">
+                      {totalItems}
+                    </span>
+                  )}
                 </Link>
               </li>              
               {session?.user ? (
@@ -147,11 +177,18 @@ export default function Header({ session }: { session: Session | null }) {
 
           {/* Hamburger — mobile only */}
           <button
-            className="hamburger md:!hidden"
+            className={`hamburger relative md:!hidden ${isCartWiggling ? 'cart-pop' : ''}`}
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((prev) => !prev)}
           >
+            {/* Mobile Notification Badge */}
+            {totalItems > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-stone-800 text-[9px] font-bold text-white shadow-sm">
+                {totalItems}
+              </span>
+            )}
+
             <span className={`bar ${menuOpen ? 'bar-open-1' : ''}`} />
             <span className={`bar ${menuOpen ? 'bar-open-2' : ''}`} />
             <span className={`bar ${menuOpen ? 'bar-open-3' : ''}`} />
@@ -164,10 +201,14 @@ export default function Header({ session }: { session: Session | null }) {
         <nav className="flex flex-col gap-1 px-6 pb-4 pt-2">
           <Link
             href="/cart"
-            className="mobile-nav-link"
+            className={`mobile-nav-link ${isCartWiggling ? 'cart-pop' : ''}`}
             onClick={() => setMenuOpen(false)}
           >
-            Cart
+            Cart {totalItems > 0 && (
+              <span className="ml-1 rounded-full bg-stone-800 px-2 py-0.5 text-[10px] text-white">
+                {totalItems}
+              </span>
+            )}
           </Link>
           <Link
             href="/listing"
@@ -292,6 +333,7 @@ export default function Header({ session }: { session: Session | null }) {
           border: none;
           cursor: pointer;
           padding: 0;
+          position: relative;
         }
         .bar {
           display: block;
@@ -345,6 +387,14 @@ export default function Header({ session }: { session: Session | null }) {
           background: var(--muted);
           color: var(--foreground);
         }
+          @keyframes cart-pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); color: var(--primary); }
+            100% { transform: scale(1); }
+          }
+          .cart-pop {
+            animation: cart-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          }
       `}</style>
     </header>
   );

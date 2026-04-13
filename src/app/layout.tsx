@@ -44,13 +44,15 @@ export default async function RootLayout({
         suppressHydrationWarning
       >
         <AuthProvider>
-          <Header session={session}/>
-          
-          <main className='flex-grow'>
-            <CartProvider>{children}</CartProvider>
-          </main>
+          <CartProvider>
+            <Header session={session}/>
+            
+            <main className='flex-grow'>
+              {children}
+            </main>
 
-          <Footer />
+            <Footer />
+          </CartProvider>
         </AuthProvider>
 
       </body>
