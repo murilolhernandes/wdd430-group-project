@@ -8,10 +8,9 @@ import { User } from "@/app/lib/models/User";
 import { Product } from "@/app/lib/models/Product";
 import bcrypt from 'bcryptjs';
 import { redirect } from "next/navigation";
-import { writeFile } from 'fs/promises';
-import path from 'path';
 import { revalidatePath } from "next/cache";
 import { Review } from "@/app/lib/models/Review";
+import { put } from '@vercel/blob';
 
 interface DBItem {
   productId: string;
@@ -306,16 +305,11 @@ export async function addListing(
   }
 
   try {
-    const buffer = Buffer.from(await imageFile.arrayBuffer());
+    const blob = await put(`items/${imageFile.name}`, imageFile, {
+      access: 'public',
+    });
 
-    const filename = `${Date.now()}-${imageFile.name.replaceAll(' ', '-')}`;
-
-    const uploadDir = path.join(process.cwd(), 'public', 'items');
-    const filePath = path.join(uploadDir, filename);
-
-    await writeFile(filePath, buffer);
-
-    imagePathForDb = `/items/${filename}`;
+    imagePathForDb = blob.url;
 
   } catch (error) {
     console.error("Error saving file:", error);
@@ -420,16 +414,11 @@ export async function updateListing(
     let imagePathForDb = existingImageSrc;
 
     if (imageFile && imageFile.size > 0) {
-      const buffer = Buffer.from(await imageFile.arrayBuffer());
+      const blob = await put(`items/${imageFile.name}`, imageFile, {
+      access: 'public',
+      });
 
-      const filename = `${Date.now()}-${imageFile.name.replaceAll(' ', '-')}`;
-
-      const uploadDir = path.join(process.cwd(), 'public', 'items');
-      const filePath = path.join(uploadDir, filename);
-
-      await writeFile(filePath, buffer);
-
-      imagePathForDb = `/items/${filename}`;
+      imagePathForDb = blob.url;
     }
 
     if (!slug || !category || !description || !imageAlt || !material || !name || !shippingEstimate) {
@@ -520,9 +509,6 @@ export async function clearCartDB() {
 
 export async function submitReview(formData: FormData) {
   const session = await auth();
-  if (!session?.user.email) {
-    return { error: "You must be logged in to leave a review." };
-  }
 
   const productId = formData.get('productId') as string;
   const rating = Number(formData.get('rating'));
@@ -538,13 +524,19 @@ export async function submitReview(formData: FormData) {
   try {
     await dbConnect();
 
-    const user = await User.findOne({ email: session.user.email });
+    let user = null;
+    if (session?.user?.email) {
+      user = await User.findOne({ email: session.user.email });
+      // return { error: "You must be logged in to leave a review." };
+    }
+
+    // user = await User.findOne({ email: session.user.email });
     const actualName = user ? `${user.firstName} ${user.lastName}` : "Verified Buyer";
     
     await Review.create({
       productId,
       userName: actualName,
-      userEmail: session.user.email,
+      userEmail: session?.user?.email || "Guest",
       rating,
       comment,
     });

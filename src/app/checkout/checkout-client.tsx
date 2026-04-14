@@ -105,27 +105,23 @@ export default function CheckoutClient({ products }: { products: Product[] }) {
 
   if (checkoutState === 'success') {
     return (
-      <div className="min-h-screen bg-stone-50 py-16">
-        <section className="section-padding">
-          <div className="container-earth max-w-2xl">
-            <div className="earth-card p-10 text-center">
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600">
-                <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <h1 className="text-4xl font-bold text-stone-800">Payment Successful!</h1>
-              <p className="mt-4 text-stone-600">
-                Thank you for your purchase. Your order has been confirmed and your cart has been emptied. A receipt has been sent to your email.
-              </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                <Link href="/shop" className="rounded-md bg-stone-800 px-6 py-3 font-medium !text-white transition hover:bg-stone-700">
-                  Continue Shopping
-                </Link>
-              </div>
-            </div>
+      <div className="container-earth max-w-2xl">
+        <div className="earth-card p-10 text-center">
+          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600">
+            <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
           </div>
-        </section>
+          <h1 className="text-4xl font-bold text-stone-800">Payment Successful!</h1>
+          <p className="mt-4 text-stone-600">
+            Thank you for your purchase. Your order has been confirmed and your cart has been emptied. A receipt has been sent to your email.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+            <Link href="/shop" className="rounded-md bg-stone-800 px-6 py-3 font-medium !text-white transition hover:bg-stone-700">
+              Continue Shopping
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
@@ -291,7 +287,7 @@ export default function CheckoutClient({ products }: { products: Product[] }) {
                 <button
                   type="submit"
                   disabled={isPaymentDisabled}
-                  className="mt-6 w-full rounded-md bg-stone-800 px-6 py-4 font-bold text-white uppercase tracking-wider transition hover:bg-stone-700 disabled:cursor-not-allowed disabled:bg-stone-400"
+                  className="mt-6 w-full cursor-pointer rounded-md bg-stone-800 px-6 py-4 font-bold text-white uppercase tracking-wider transition hover:bg-stone-700 disabled:cursor-not-allowed disabled:bg-stone-400"
                 >
                   {checkoutState === 'processing' ? 'Processing Secure Payment...' : `Pay $${subtotal.toFixed(2)}`}
                 </button>
