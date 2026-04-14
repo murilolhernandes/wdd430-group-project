@@ -1,7 +1,9 @@
+import mongoose from "mongoose";
 import dbConnect from "@/app/lib/mongodb";
 import { Product as ProductModel } from "@/app/lib/models/Product"
 
 export type Product = {
+  _id: string;
   slug: string;
   name: string;
   category: string;
@@ -17,12 +19,13 @@ export type Product = {
 };
 
 type RawProductDoc = Product & {
-  _id?: unknown;
+  _id?: mongoose.Types.ObjectId;
   __v?: number;
 }
 
 function toProduct(doc: RawProductDoc): Product {
   return {
+    _id: doc._id?.toString() || '',
     slug: doc.slug,
     name: doc.name,
     category: doc.category,

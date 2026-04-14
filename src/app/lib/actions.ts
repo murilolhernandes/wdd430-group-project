@@ -11,6 +11,7 @@ import { redirect } from "next/navigation";
 import { writeFile } from 'fs/promises';
 import path from 'path';
 import { revalidatePath } from "next/cache";
+import { Review } from "@/app/lib/models/Review";
 
 interface DBItem {
   productId: string;
@@ -514,5 +515,45 @@ export async function clearCartDB() {
   } catch (error) {
     console.error("Failed to clear cart:", error);
     return { error: "Failed to clear cart" };
+  }
+}
+
+export async function submitReview(formData: FormData) {
+  const session = await auth();
+  if (!session?.user.email) {
+    return { error: "You must be logged in to leaver a review." };
+  }
+
+  const productId = formData.get('productId') as string;
+  const rating = Number(formData.get('rating'));
+  const comment = formData.get('comment') as string;
+
+  if (!comment || !rating) {
+    return { error: "Missing required fields." };
+  }
+
+  let success = false;
+  let slug = '';
+
+  try {
+    await dbConnect();
+    await Review.create({
+      productId,
+      userName: session?.user?.name || 'Verified Buyer',
+      userEmail: session?.user?.email,
+      rating,
+      comment,
+    });
+    success = true;
+    slug = formData.get('slug') as string;
+
+  } catch (error) {
+    console.error("Review submission error: ", error);
+    return { error: "Database error. Failed to post review." };
+  }
+
+  if (success) {
+    revalidatePath(`/shop/${slug}`);
+    redirect(`/shop/${slug}`);
   }
 }

@@ -4,6 +4,19 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
+import { Review } from '@/app/lib/models/Review';
+import ReviewForm from '@/components/review-form';
+import dbConnect from '@/app/lib/mongodb';
+import { Suspense } from 'react';
+import mongoose from 'mongoose';
+
+type ReviewDoc = {
+  _id: mongoose.Types.ObjectId;
+  userName: string;
+  rating: number;
+  comment: string;
+  createdAt: Date;
+};
 
 const priceFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -33,6 +46,12 @@ async function loadProduct(slug: string): Promise<ProductLoadResult> {
       loadError: true,
     };
   }
+}
+
+async function getReviews(productId: string) {
+  await dbConnect();
+  const objectId = new mongoose.Types.ObjectId(productId);
+  return await Review.find({ productId: objectId }).sort({ createdAt: -1 });
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
@@ -73,6 +92,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
   if (!product) {
     notFound();
   }
+  
+  const productId = product._id;
+  const reviews = await getReviews(productId);
 
   return (
     <section className='section-padding min-h-screen'>
@@ -83,20 +105,57 @@ export default async function ProductPage({ params }: ProductPageProps) {
         >
           Back to collection
         </Link>
-
-        <div className='grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start'>
-          <div className='earth-card overflow-hidden p-4'>
-            <div className='overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-stone-100'>
-              <Image
-                src={product.imageSrc}
-                alt={product.imageAlt}
-                width={1200}
-                height={900}
-                sizes='(min-width: 1024px) 52vw, 100vw'
-                className='h-auto w-full object-cover'
-                priority
-              />
+        <div>
+          <div className='grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start'>
+            <div className='earth-card overflow-hidden p-4'>
+              <div className='overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-stone-100'>
+                <Image
+                  src={product.imageSrc}
+                  alt={product.imageAlt}
+                  width={1200}
+                  height={900}
+                  sizes='(min-width: 1024px) 52vw, 100vw'
+                  className='h-auto w-full object-cover'
+                  priority
+                />
+              </div>
             </div>
+            <div className="mt-12 pt-12 border-t border-stone-200">
+            <h3 className="text-2xl font-bold text-stone-800 mb-8">Customer Reviews</h3>
+            
+            <div className="grid gap-12 lg:grid-cols-[0.6fr_1.4fr]">
+              {/* Review Form */}
+              <div>
+                <Suspense>
+                  <ReviewForm productId={productId} />
+                </Suspense>
+              </div>
+
+              {/* Reviews List */}
+              <div className="space-y-6">
+                {reviews.length === 0 ? (
+                  <p className="text-stone-500 italic">No reviews yet. Be the first to share your thoughts!</p>
+                ) : (
+                  reviews.map((review: ReviewDoc) => (
+                    <div key={review._id.toString()} className="earth-card p-6">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="font-bold text-stone-800">{review.userName}</p>
+                          <p className="text-xs text-stone-400">
+                            {new Date(review.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <div className="text-amber-500">
+                          {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
+                        </div>
+                      </div>
+                      <p className="text-stone-600 mt-4 leading-relaxed">{review.comment}</p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
           </div>
 
           <article className='space-y-6'>
