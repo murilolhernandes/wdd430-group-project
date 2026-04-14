@@ -71,21 +71,30 @@ export default function CartClient({ products }: { products: Product[] }) {
                 className='earth-card p-6 flex flex-col sm:flex-row gap-6 items-center'
               >
                 <div className='relative w-32 h-32 flex-shrink-0 bg-stone-100 rounded-md overflow-hidden'>
-                  {item.product?.imageSrc && (
-                    <Image
-                      src={item.product.imageSrc}
-                      alt={item.product.imageAlt}
-                      fill
-                      priority
-                      className='object-cover'
-                    />
-                  )}
+                  <Link
+                    href={`/shop/${item.productId}`}
+                    className='relative w-32 h-32 flex-shrink-0 bg-stone-100 rounded-md overflow-hidden block transition hover:opacity-80'
+                  >
+                    {item.product?.imageSrc && (
+                      <Image
+                        src={item.product.imageSrc}
+                        alt={item.product.imageAlt}
+                        fill
+                        priority
+                        className='object-cover'
+                      />
+                    )}
+                  </Link>
                 </div>
 
                 <div className='flex-grow text-center sm:text-left'>
-                  <h3 className='text-xl font-semibold text-stone-800'>
-                    {item.product?.name}
-                  </h3>
+                  <Link
+                    href={`/shop/${item.productId}`}
+                  >
+                    <h3 className='text-xl font-semibold text-stone-800 transition hover:text-stone-500 hover:underline'>
+                      {item.product?.name}
+                    </h3>
+                  </Link>
                   <p className='text-sm text-stone-500 mt-1'>
                     By {item.product?.artisan}
                   </p>
