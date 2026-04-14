@@ -107,138 +107,135 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </Link>
         <div>
           <div className='grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start'>
-            <div className='earth-card overflow-hidden p-4'>
-              <div className='overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-stone-100'>
-                <Image
-                  src={product.imageSrc}
-                  alt={product.imageAlt}
-                  width={1200}
-                  height={900}
-                  sizes='(min-width: 1024px) 52vw, 100vw'
-                  className='h-auto w-full object-cover'
-                  priority
-                />
-              </div>
-            </div>
-            <div className="mt-12 pt-12 border-t border-stone-200">
-            <h3 className="text-2xl font-bold text-stone-800 mb-8">Customer Reviews</h3>
-            
-            <div className="grid gap-12 lg:grid-cols-[0.6fr_1.4fr]">
-              {/* Review Form */}
-              <div>
-                <Suspense>
-                  <ReviewForm productId={productId} />
-                </Suspense>
+            <div className='flex flex-col gap-4'>
+              
+              <div className='earth-card overflow-hidden p-4'>
+                <div className='overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-stone-100'>
+                  <Image
+                    src={product.imageSrc}
+                    alt={product.imageAlt}
+                    width={1200}
+                    height={900}
+                    sizes='(min-width: 1024px) 52vw, 100vw'
+                    className='h-auto w-full object-cover'
+                    priority
+                  />
+                </div>
               </div>
 
-              {/* Reviews List */}
               <div className="space-y-6">
-                {reviews.length === 0 ? (
-                  <p className="text-stone-500 italic">No reviews yet. Be the first to share your thoughts!</p>
-                ) : (
-                  reviews.map((review: ReviewDoc) => (
-                    <div key={review._id.toString()} className="earth-card p-6">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="font-bold text-stone-800">{review.userName}</p>
-                          <p className="text-xs text-stone-400">
-                            {new Date(review.createdAt).toLocaleDateString()}
-                          </p>
+                <h3 className="text-2xl font-bold text-stone-800 border-[var(--border)] pb-4">Customer Reviews</h3>
+                <ReviewForm productId={productId} slug={product.slug} />
+
+                <div className="space-y-4">
+                  <Suspense>
+                    {reviews.length === 0 ? (
+                    <p className="text-stone-500 italic">No reviews yet. Be the first to share your thoughts!</p>
+                    ) : (
+                      reviews.map((review: ReviewDoc) => (
+                        <div key={review._id.toString()} className="earth-card p-6">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <p className="font-bold text-stone-800">{review.userName}</p>
+                              <p className="text-xs text-stone-400">
+                                {new Date(review.createdAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <div className="text-amber-500">
+                              {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
+                            </div>
+                          </div>
+                          <p className="text-stone-600 mt-4 leading-relaxed">{review.comment}</p>
                         </div>
-                        <div className="text-amber-500">
-                          {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
-                        </div>
-                      </div>
-                      <p className="text-stone-600 mt-4 leading-relaxed">{review.comment}</p>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </div>
-          </div>
-
-          <article className='space-y-6'>
-            <div className='space-y-3'>
-              <p className='text-sm font-semibold uppercase tracking-[0.2em] text-stone-500'>
-                {product.category}
-              </p>
-
-              <div className='flex flex-wrap items-center gap-3'>
-                <h2 className='text-4xl font-bold leading-tight text-stone-800 md:text-5xl'>
-                  {product.name}
-                </h2>
-
-                {product.featured ? (
-                  <span className='rounded-full bg-stone-200 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-stone-700'>
-                    Featured
-                  </span>
-                ) : null}
-              </div>
-
-              <p className='text-lg text-stone-600'>{product.description}</p>
-            </div>
-
-            <div className='earth-card p-6'>
-              <p className='text-sm font-semibold uppercase tracking-[0.18em] text-stone-500'>
-                Price
-              </p>
-
-              <p className='mt-3 text-4xl font-bold text-stone-800'>
-                {priceFormatter.format(product.price)}
-              </p>
-
-              <p className='mt-2 text-sm text-stone-500'>
-                {product.stock > 0
-                  ? `${product.stock} pieces ready to ship`
-                  : 'Currently unavailable'}
-              </p>
-
-              <div className='mt-6'>
-                <AddToCartButton slug={slug} productName={product.name} />
+                      ))
+                    )}
+                  </Suspense>
+                </div>
               </div>
             </div>
 
-            <div className='grid gap-4 sm:grid-cols-2'>
-              <div className='earth-card p-6'>
-                <p className='text-xs font-semibold uppercase tracking-[0.18em] text-stone-500'>
-                  Artisan
+            <article className='space-y-6'>
+              <div className='space-y-3'>
+                <p className='text-sm font-semibold uppercase tracking-[0.2em] text-stone-500'>
+                  {product.category}
                 </p>
-                <p className='mt-2 text-base text-stone-700'>
-                  {product.artisan}
-                </p>
+
+                <div className='flex flex-wrap items-center gap-3'>
+                  <h2 className='text-4xl font-bold leading-tight text-stone-800 md:text-5xl'>
+                    {product.name}
+                  </h2>
+
+                  {product.featured ? (
+                    <span className='rounded-full bg-stone-200 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-stone-700'>
+                      Featured
+                    </span>
+                  ) : null}
+                </div>
+
+                <p className='text-lg text-stone-600'>{product.description}</p>
               </div>
 
               <div className='earth-card p-6'>
-                <p className='text-xs font-semibold uppercase tracking-[0.18em] text-stone-500'>
-                  Material
+                <p className='text-sm font-semibold uppercase tracking-[0.18em] text-stone-500'>
+                  Price
                 </p>
-                <p className='mt-2 text-base text-stone-700'>
-                  {product.material}
-                </p>
-              </div>
 
-              <div className='earth-card p-6'>
-                <p className='text-xs font-semibold uppercase tracking-[0.18em] text-stone-500'>
-                  Shipping
+                <p className='mt-3 text-4xl font-bold text-stone-800'>
+                  {priceFormatter.format(product.price)}
                 </p>
-                <p className='mt-2 text-base text-stone-700'>
-                  {product.shippingEstimate}
-                </p>
-              </div>
 
-              <div className='earth-card p-6'>
-                <p className='text-xs font-semibold uppercase tracking-[0.18em] text-stone-500'>
-                  Availability
-                </p>
-                <p className='mt-2 text-base text-stone-700'>
+                <p className='mt-2 text-sm text-stone-500'>
                   {product.stock > 0
-                    ? `${product.stock} ready to ship`
-                    : 'Sold out'}
+                    ? `${product.stock} pieces ready to ship`
+                    : 'Currently unavailable'}
                 </p>
+
+                <div className='mt-6'>
+                  <AddToCartButton slug={slug} productName={product.name} />
+                </div>
               </div>
-            </div>
-          </article>
+
+              <div className='grid gap-4 sm:grid-cols-2'>
+                <div className='earth-card p-6'>
+                  <p className='text-xs font-semibold uppercase tracking-[0.18em] text-stone-500'>
+                    Artisan
+                  </p>
+                  <p className='mt-2 text-base text-stone-700'>
+                    {product.artisan}
+                  </p>
+                </div>
+
+                <div className='earth-card p-6'>
+                  <p className='text-xs font-semibold uppercase tracking-[0.18em] text-stone-500'>
+                    Material
+                  </p>
+                  <p className='mt-2 text-base text-stone-700'>
+                    {product.material}
+                  </p>
+                </div>
+
+                <div className='earth-card p-6'>
+                  <p className='text-xs font-semibold uppercase tracking-[0.18em] text-stone-500'>
+                    Shipping
+                  </p>
+                  <p className='mt-2 text-base text-stone-700'>
+                    {product.shippingEstimate}
+                  </p>
+                </div>
+
+                <div className='earth-card p-6'>
+                  <p className='text-xs font-semibold uppercase tracking-[0.18em] text-stone-500'>
+                    Availability
+                  </p>
+                  <p className='mt-2 text-base text-stone-700'>
+                    {product.stock > 0
+                      ? `${product.stock} ready to ship`
+                      : 'Sold out'}
+                  </p>
+                </div>
+              </div>
+            </article>
+          </div>
         </div>
       </div>
     </section>

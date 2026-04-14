@@ -18,7 +18,7 @@ function SubmitButton() {
   );
 }
 
-export default function ReviewForm({ productId }: { productId: string }) {
+export default function ReviewForm({ productId, slug }: { productId: string; slug: string }) {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -31,6 +31,8 @@ export default function ReviewForm({ productId }: { productId: string }) {
 
     formData.append('productId', productId);
     formData.append('rating', rating.toString());
+
+    formData.append('slug', slug);
     
     const result = await submitReview(formData);
 

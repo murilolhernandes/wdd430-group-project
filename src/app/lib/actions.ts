@@ -537,13 +537,18 @@ export async function submitReview(formData: FormData) {
 
   try {
     await dbConnect();
+
+    const user = await User.findOne({ email: session.user.email });
+    const actualName = user ? `${user.firstName} ${user.lastName}` : "Verified Buyer";
+    
     await Review.create({
       productId,
-      userName: session?.user?.name || 'Verified Buyer',
-      userEmail: session?.user?.email,
+      userName: actualName,
+      userEmail: session.user.email,
       rating,
       comment,
     });
+
     success = true;
     slug = formData.get('slug') as string;
 
