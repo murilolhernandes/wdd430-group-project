@@ -154,31 +154,25 @@ export default function CheckoutClient({ products }: { products: Product[] }) {
             <form onSubmit={handleSubmit} className="space-y-8">
               
               <div className="earth-card p-8 space-y-5">
-                <h2 className="text-xl font-bold text-stone-800 border-b border-stone-200 pb-3 !mb-5">1. Contact Information</h2>
+                <h2 className="text-xl font-bold text-stone-800 border-b border-stone-200 pb-3 mb-5">1. Contact Information</h2>
                 <div className="grid gap-5 md:grid-cols-2">
-                  <label className="block" htmlFor='fullName'>
+                  <label className="block">
                     <span className="mb-2 block text-sm font-medium text-stone-700">Full Name</span>
                     <input
-                      id="fullName"
-                      name="fullName"
                       type="text"
                       value={formData.fullName}
                       onChange={(e) => setFormData((prev) => ({ ...prev, fullName: e.target.value }))}
                       className="w-full rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800 outline-none focus:border-stone-500 focus:ring-1 focus:ring-stone-500"
-                      placeholder='Enter your full name (E.g. "Micah Santos")'
                       required
                     />
                   </label>
-                  <label className="block" htmlFor='email'>
+                  <label className="block">
                     <span className="mb-2 block text-sm font-medium text-stone-700">Email Address</span>
                     <input
-                      id="email"
-                      name="email"
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
                       className="w-full rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800 outline-none focus:border-stone-500 focus:ring-1 focus:ring-stone-500"
-                      placeholder='Enter your email (E.g. "msantos@gmail.com")'
                       required
                     />
                   </label>
@@ -186,56 +180,45 @@ export default function CheckoutClient({ products }: { products: Product[] }) {
               </div>
 
               <div className="earth-card p-8 space-y-5">
-                <h2 className="text-xl font-bold text-stone-800 border-b border-stone-200 pb-3 !mb-5">2. Billing Address</h2>
-                <label className="block" htmlFor='streetAddress'>
+                <h2 className="text-xl font-bold text-stone-800 border-b border-stone-200 pb-3 mb-5">2. Billing Address</h2>
+                <label className="block">
                   <span className="mb-2 block text-sm font-medium text-stone-700">Street Address</span>
                   <input
-                    id="streetAddress"
-                    name="streetAddress"
                     type="text"
                     value={formData.address}
                     onChange={(e) => setFormData((prev) => ({ ...prev, address: e.target.value }))}
                     className="w-full rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800 outline-none focus:border-stone-500 focus:ring-1 focus:ring-stone-500"
-                    placeholder='Enter your street address (E.g. "N Salem Hwy")'
                     required
                   />
                 </label>
                 <div className="grid gap-5 md:grid-cols-3">
-                  <label className="block md:col-span-1" htmlFor='city'>
+                  <label className="block md:col-span-1">
                     <span className="mb-2 block text-sm font-medium text-stone-700">City</span>
                     <input
-                      id="city"
-                      name="city"
                       type="text"
                       value={formData.city}
                       onChange={(e) => setFormData((prev) => ({ ...prev, city: e.target.value }))}
                       className="w-full rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800 outline-none focus:border-stone-500 focus:ring-1 focus:ring-stone-500"
-                      placeholder='Enter the city (E.g. "Rexburg")'
                       required
                     />
                   </label>
-                  <label className="block md:col-span-1" htmlFor='state'>
+                  <label className="block md:col-span-1">
                     <span className="mb-2 block text-sm font-medium text-stone-700">State</span>
                     <input
-                      id="state"
-                      name="state"
                       type="text"
                       value={formData.state}
                       onChange={(e) => setFormData((prev) => ({ ...prev, state: e.target.value }))}
                       className="w-full rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800 outline-none focus:border-stone-500 focus:ring-1 focus:ring-stone-500"
-                      placeholder='Enter the state (E.g. "ID")'
                       required
                     />
                   </label>
-                  <label className="block md:col-span-1" htmlFor='zipcode'>
+                  <label className="block md:col-span-1">
                     <span className="mb-2 block text-sm font-medium text-stone-700">ZIP Code</span>
                     <input
-                      id="zipcode"
-                      name="zipcode"
                       type="text"
                       value={formData.zip}
                       onChange={handleZipChange}
-                      placeholder='Enter the zipcode (E.g. "83440")'
+                      placeholder="12345"
                       className="w-full rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800 outline-none focus:border-stone-500 focus:ring-1 focus:ring-stone-500"
                       required
                     />
@@ -244,12 +227,10 @@ export default function CheckoutClient({ products }: { products: Product[] }) {
               </div>
 
               <div className="earth-card p-8 space-y-5">
-                <h2 className="text-xl font-bold text-stone-800 border-b border-stone-200 pb-3 !mb-5">3. Payment Details</h2>
-                <label className="block" htmlFor='cardNumber'>
+                <h2 className="text-xl font-bold text-stone-800 border-b border-stone-200 pb-3 mb-5">3. Payment Details</h2>
+                <label className="block">
                   <span className="mb-2 block text-sm font-medium text-stone-700">Card Number</span>
                   <input
-                    id="cardNumber"
-                    name="cardNumber"
                     type="text"
                     inputMode="numeric"
                     placeholder="0000 0000 0000 0000"
@@ -260,11 +241,9 @@ export default function CheckoutClient({ products }: { products: Product[] }) {
                   />
                 </label>
                 <div className="grid grid-cols-2 gap-5">
-                  <label className="block" htmlFor='expDate'>
+                  <label className="block">
                     <span className="mb-2 block text-sm font-medium text-stone-700">Expiration Date</span>
                     <input
-                      id="expDate"
-                      name="expDate"
                       type="text"
                       placeholder="MM/YY"
                       value={formData.expirationDate}
@@ -273,11 +252,9 @@ export default function CheckoutClient({ products }: { products: Product[] }) {
                       required
                     />
                   </label>
-                  <label className="block" htmlFor='cvv'>
+                  <label className="block">
                     <span className="mb-2 block text-sm font-medium text-stone-700">Security Code (CVV)</span>
                     <input
-                      id="cvv"
-                      name="cvv"
                       type="password"
                       inputMode="numeric"
                       placeholder="123"
@@ -295,7 +272,7 @@ export default function CheckoutClient({ products }: { products: Product[] }) {
                 >
                   {checkoutState === 'processing' ? 'Processing Secure Payment...' : `Pay $${subtotal.toFixed(2)}`}
                 </button>
-                <p className="text-center text-xs text-stone-600 mt-3">
+                <p className="text-center text-xs text-stone-400 mt-3">
                   Your payment information is completely safe and securely processed.
                 </p>
               </div>
@@ -323,7 +300,7 @@ export default function CheckoutClient({ products }: { products: Product[] }) {
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping</span>
-                  <span className="text-green-800 font-medium">Free</span>
+                  <span className="text-green-600 font-medium">Free</span>
                 </div>
               </div>
               <div className="mt-6 flex items-center justify-between">
