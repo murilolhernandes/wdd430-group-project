@@ -20,8 +20,8 @@ export default async function CheckoutPage() {
   const products = await getProducts();
 
   return (
-    <div className="min-h-screen bg-stone-50 py-12">
-      <section className="section-padding">
+    <div className="space-y-8 container-earth">
+      <section className="section-padding min-h-screen">
         <CheckoutClient products={products} />
       </section>
     </div>

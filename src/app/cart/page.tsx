@@ -18,5 +18,3 @@ export default async function CartPage() {
     </div>
   );
 }
-
-// Gotta fix the background color
