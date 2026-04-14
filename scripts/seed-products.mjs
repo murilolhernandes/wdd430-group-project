@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-import { MongoClient } from "mongodb";
+import mongoose from "mongoose";
 
 const COLLECTION_NAME = "products";
 
@@ -20,16 +20,10 @@ async function main() {
     throw new Error("Product seed data must be an array.");
   }
 
-  const client = new MongoClient(uri, {
-    appName: "wdd430-group-project-seed",
-  });
-
-  await client.connect();
+  await mongoose.connect(uri);
 
   try {
-    const database = process.env.MONGODB_DB
-      ? client.db(process.env.MONGODB_DB)
-      : client.db();
+    const database = mongoose.connection.db;
     const collection = database.collection(COLLECTION_NAME);
 
     await collection.createIndex({ slug: 1 }, { unique: true });
@@ -47,16 +41,10 @@ async function main() {
     console.log(
       `Seeded ${seedProducts.length} products into ${database.databaseName}.${COLLECTION_NAME}.`,
     );
-    console.log(`Matched: ${result.matchedCount}`);
-    console.log(`Modified: ${result.modifiedCount}`);
-    console.log(`Upserted: ${result.upsertedCount}`);
+    console.log(`Matched: ${result.matchedCount}, Modified: ${result.modifiedCount}, Upserted: ${result.upsertedCount}`);
   } finally {
-    await client.close();
+    await mongoose.disconnect();
   }
 }
 
-main().catch((error) => {
-  console.error("Product seed failed.");
-  console.error(error);
-  process.exit(1);
-});
+main().catch(console.error);

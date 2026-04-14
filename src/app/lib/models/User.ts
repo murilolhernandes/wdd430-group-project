@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema({
     enum: ['user', 'admin'],
     default: 'user'
   },
+  bio: { type: String },
   cart: [
     {
       productId: { type: String, required: true },

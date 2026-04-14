@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { addToCartDB, syncGuestCartToDB } from '@/app/lib/actions';
+import { addToCartDB, syncGuestCartToDB, removeFromCartDB, getCartDB, clearCartDB } from '@/app/lib/actions';
 
 type CartItem = {
   productId: string;
@@ -12,6 +12,8 @@ type CartItem = {
 type CartContextType = {
   cart: CartItem[];
   addToCart: (productId: string, quantity: number) => Promise<void>;
+  removeFromCart: (productId: string) => Promise<void>;
+  clearCart: () => Promise<void>;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -21,30 +23,34 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
 
   useEffect(() => {
-    const savedCart = localStorage.getItem('guestCart');
-    if (savedCart && status === 'unauthenticated') {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setCart(JSON.parse(savedCart));
-    }
-  }, [status]);
+    if (status === 'loading') return;
 
-  useEffect(() => {
     const syncCart = async () => {
       const savedCart = localStorage.getItem('guestCart');
+
       if (status === 'authenticated' && savedCart) {
         const localCartItems = JSON.parse(savedCart);
         if (localCartItems.length > 0) {
           const result = await syncGuestCartToDB(localCartItems);
-          if (result.success && result.cart) {
-             setCart(result.cart);
+          if (result?.success && result?.cart) {
+            setCart(result.cart);
           }
         }
         localStorage.removeItem('guestCart');
+      } else if (status === 'unauthenticated' && savedCart) {
+        try {
+          setCart(JSON.parse(savedCart));
+        } catch (error) {
+          console.error("Failed to parse cart data", error);
+        }
       } else if (status === 'authenticated') {
-         // Optionally: Fetch the user's cart from DB here if localStorage was empty
-         // to populate the initial state for logged-in users.
+        const result = await getCartDB();
+        if (result?.success && result?.cart) {
+          setCart(result.cart);
+        }
       }
     };
+
     syncCart();
   }, [status]);
 
@@ -74,8 +80,47 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const removeFromCart = async (productId: string) => {
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => item.productId === productId);
+      if (!existingItem) return prevCart;
+
+      if (existingItem.quantity > 1) {
+        return prevCart.map((item) => item.productId === productId ? { ...item, quantity: item.quantity - 1} : item);
+      } else {
+        return prevCart.filter((item) => item.productId !== productId);
+      }
+    });
+
+    if (status === 'authenticated') {
+      await removeFromCartDB(productId, 1);
+    } else {
+      const currentCart = JSON.parse(localStorage.getItem('guestCart') || '[]');
+      const existingItemIndex = currentCart.findIndex((item: CartItem) => item.productId === productId);
+
+      if (existingItemIndex > -1) {
+        if (currentCart[existingItemIndex].quantity > 1) {
+          currentCart[existingItemIndex].quantity -= 1;
+        } else {
+          currentCart.splice(existingItemIndex, 1);
+        }
+        localStorage.setItem('guestCart', JSON.stringify(currentCart));
+      }
+    }
+  };
+
+  const clearCart = async () => {
+    setCart([]);
+
+    if (status === 'authenticated') {
+      await clearCartDB();
+    }
+
+    localStorage.removeItem('guestCart');
+  };
+
   return (
-    <CartContext.Provider value={{ cart, addToCart }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart }}>
       {children}
     </CartContext.Provider>
   );
