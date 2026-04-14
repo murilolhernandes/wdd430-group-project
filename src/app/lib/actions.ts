@@ -8,6 +8,14 @@ import { User } from "@/app/lib/models/User";
 import bcrypt from 'bcryptjs';
 import { redirect } from "next/navigation";
 
+
+interface DBItem {
+  productId: string;
+  quantity: number;
+}
+
+
+
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
@@ -80,6 +88,7 @@ export async function createAccount(
 }
 
 
+
 export async function getUserProfile() {
   try {
     const session = await auth();
@@ -97,10 +106,10 @@ export async function getUserProfile() {
     }
 
     return {
-      firstName: user.firstName || '',
-      lastName: user.lastName || '',
-      email: user.email,
-      bio: user.bio || '',
+      firstName: (user as any).firstName || '',
+      lastName: (user as any).lastName || '',
+      email: (user as any).email,
+      bio: (user as any).bio || '',
     };
 
   } catch (error) {
@@ -113,7 +122,7 @@ export async function updateAccount(formData: FormData) {
   const firstName = formData.get('firstName') as string;
   const lastName = formData.get('lastName') as string;
   const password = formData.get('password') as string | null;
-  const bio = formData.get('bio'); // Mantemos sem "as string" inicialmente para checar null
+  const bio = formData.get('bio'); 
 
   if (!firstName || !lastName) {
     redirect('/account-info?error=First name and last name are required.');
@@ -150,4 +159,62 @@ export async function updateAccount(formData: FormData) {
   }
 
   redirect('/account-info?message=Account updated successfully.');
+}
+
+
+
+export async function addToCartDB(productId: string, quantity: number) {
+  try {
+    const session = await auth();
+    if (!session?.user?.email) return { error: "Not logged in" };
+
+    await dbConnect();
+    const user = await User.findOne({ email: session.user.email });
+    if (!user) return { error: "User not found" };
+
+    const existingItemIndex = user.cart.findIndex(
+      (item: DBItem) => item.productId === productId
+    );
+
+    if (existingItemIndex > -1) {
+      user.cart[existingItemIndex].quantity += quantity;
+    } else {
+      user.cart.push({ productId, quantity });
+    }
+
+    await user.save();
+    return { success: true, cart: JSON.parse(JSON.stringify(user.cart)) };
+  } catch (error) {
+    console.error("Failed to add to cart:", error);
+    return { error: "Failed to update cart" };
+  }
+}
+
+export async function syncGuestCartToDB(localCartItems: DBItem[]) {
+  try {
+    const session = await auth();
+    if (!session?.user?.email || localCartItems.length === 0) return { success: true };
+
+    await dbConnect();
+    const user = await User.findOne({ email: session.user.email });
+    if (!user) return { error: "User not found" };
+
+    for (const localItem of localCartItems) {
+      const existingItemIndex = user.cart.findIndex(
+        (dbItem: DBItem) => dbItem.productId === localItem.productId
+      );
+
+      if (existingItemIndex > -1) {
+        user.cart[existingItemIndex].quantity += localItem.quantity;
+      } else {
+        user.cart.push(localItem);
+      }
+    }
+
+    await user.save();
+    return { success: true, cart: JSON.parse(JSON.stringify(user.cart)) };
+  } catch (error) {
+    console.error("Failed to sync cart:", error);
+    return { error: "Failed to sync cart" };
+  }
 }
