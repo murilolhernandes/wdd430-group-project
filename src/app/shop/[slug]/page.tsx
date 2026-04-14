@@ -10,7 +10,6 @@ import dbConnect from '@/app/lib/mongodb';
 import { Suspense } from 'react';
 import mongoose from 'mongoose';
 import { Metadata } from 'next';
-import { Product } from '@/app/lib/models/Product';
 
 type ReviewDoc = {
   _id: mongoose.Types.ObjectId;
