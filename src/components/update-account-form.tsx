@@ -24,8 +24,9 @@ export default function UpdateAccountForm({ user }: { user: UserProfile }) {
       )}
 
       <div className="space-y-2">
-        <label className="block font-semibold text-stone-700">First Name</label>
-        <input 
+        <label className="block font-semibold text-stone-700" htmlFor='firstName'>First Name</label>
+        <input
+          id="firstName"
           type="text" 
           name="firstName"
           defaultValue={state.fields?.firstName || user.firstName}
@@ -35,8 +36,9 @@ export default function UpdateAccountForm({ user }: { user: UserProfile }) {
       </div>
 
       <div className="space-y-2">
-        <label className="block font-semibold text-stone-700">Last Name</label>
-        <input 
+        <label className="block font-semibold text-stone-700" htmlFor='lastName'>Last Name</label>
+        <input
+          id="lastName"
           type="text" 
           name="lastName"
           defaultValue={state.fields?.lastName || user.lastName}
@@ -46,11 +48,13 @@ export default function UpdateAccountForm({ user }: { user: UserProfile }) {
       </div>
 
       <div className="space-y-2">
-        <label className="block font-semibold text-stone-700">Email Address 🔒</label>
+        <label className="block font-semibold text-stone-700" htmlFor='email'>Email Address 🔒</label>
         <div className="relative flex items-center">
           <span className="absolute left-3 text-sm" aria-hidden="true"></span>
           <input 
-            type="email" 
+            id="email"
+            type="email"
+            name="email"
             defaultValue={user.email}
             disabled 
             className="earth-input w-full pl-9 opacity-60 cursor-not-allowed bg-[var(--muted)] text-stone-500" 
@@ -62,8 +66,9 @@ export default function UpdateAccountForm({ user }: { user: UserProfile }) {
       </div>
 
       <div className="space-y-2">
-        <label className="block font-semibold text-stone-700">New Password (leave blank to keep current)</label>
+        <label className="block font-semibold text-stone-700" htmlFor='password'>New Password (leave blank to keep current)</label>
         <input 
+          id="password"
           type="password"
           name="password"
           placeholder="Enter a new password to change" 
@@ -72,9 +77,10 @@ export default function UpdateAccountForm({ user }: { user: UserProfile }) {
       </div>
 
       <div className="space-y-2">
-        <label className="block font-semibold text-stone-700">Artisan Bio / About You</label>
+        <label className="block font-semibold text-stone-700" htmlFor='bio'>Artisan Bio / About You</label>
         <textarea 
-          rows={4} 
+          rows={4}
+          id="bio"
           name="bio"
           defaultValue={state.fields?.bio || user.bio || ''}
           placeholder="Tell your story to your customers..." 

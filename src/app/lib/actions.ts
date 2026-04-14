@@ -360,6 +360,9 @@ export async function addListing(
     return { message: 'Database error. Failed to add listing.', fields };
   }
 
+  revalidatePath('/shop');
+  revalidatePath('/');
+
   redirect(`/shop/${slug}`);
 }
 
@@ -458,6 +461,9 @@ export async function updateListing(
     console.error("Failed to update listing: ", error);
     return { message: 'Database error. Failed to update listing.' };
   }
+
+  revalidatePath('/shop');
+  revalidatePath('/');
 
   redirect('/account-info?message=Listing updated successfully.');
 }

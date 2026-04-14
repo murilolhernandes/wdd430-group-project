@@ -53,7 +53,7 @@ export default async function AccountInfoPage({
           Update your personal details and manage your artisan profile.
         </p>
 
-        {message && <p className="mb-4 text-green-500 text-center">{message}</p>}
+        {message && <p className="mb-4 rounded-md text-green-800 py-3 text-center font-medium">{message}</p>}
 
         <UpdateAccountForm user={plainUser} />
 

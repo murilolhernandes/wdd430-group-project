@@ -20,7 +20,6 @@ export default function AddListingForm() {
               className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
               id='name' type='text' name='name' placeholder='Enter the material of the product. (E.g. "River Reed Basket")' required
               defaultValue={state?.fields?.name || ''}
-              // value="Clay Hearth"
               />
             <TagIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
           </div>
@@ -34,7 +33,6 @@ export default function AddListingForm() {
               className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
               id='slug' type='text' name='slug' placeholder='Enter the slug of the product. (E.g "river-reed-basket")' required
               defaultValue={state?.fields?.slug || ''}
-              // value="clay-hearth"
             />
             <LinkIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
           </div>
@@ -48,7 +46,6 @@ export default function AddListingForm() {
               className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
               id='category' type='text' name='category' placeholder='Enter the gategory of the product. (E.g. "Storage")' required
               defaultValue={state?.fields?.category || ''}
-              // value="decor"
               />
             <Square2StackIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
           </div>
@@ -65,7 +62,6 @@ export default function AddListingForm() {
               defaultValue={state?.fields?.description || ''}
               placeholder='Enter the description of the product. (E.g. "A structured woven basket designed for blankets, books, or entryway essentials.")' required
               className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
-              // value="A warm-toned ceramic vase that brings texture and calm to shelves, tables, or mantels."
               />
               <PencilSquareIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
           </div>
@@ -92,7 +88,6 @@ export default function AddListingForm() {
               className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
               id='imageAlt' type='text' name='imageAlt' placeholder='Enter the image description of the product. (E.g. "Woven reed basket in soft earth tones")' required
               defaultValue={state?.fields?.imageAlt || ''}
-              // value="Matte ceramic vase with a rounded silhouette"
               />
             <PencilSquareIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
           </div>
@@ -106,7 +101,6 @@ export default function AddListingForm() {
               className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
               id='material' type='text' name='material' placeholder='Enter the material of the product. (E.g. "Handwoven reed and natural dye")' required
               defaultValue={state?.fields?.material || ''}
-              // value="Stoneware clay with matte glaze"
               />
             <CubeIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
           </div>
@@ -121,7 +115,6 @@ export default function AddListingForm() {
                 className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
                 id='price' type='number' name='price' placeholder='Enter the price of the product. (E.g. "48")' required
                 defaultValue={state?.fields?.name || ''}
-                // value="64"
                 />
               <CurrencyDollarIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
             </div>
@@ -135,7 +128,6 @@ export default function AddListingForm() {
                 className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
                 id='stock' type='number' name='stock' placeholder='Enter the stock quantity of the product. (E.g. "7")' required
                 defaultValue={state?.fields?.material || ''}
-                // value="5"
                 />
               <CircleStackIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
             </div>
@@ -150,7 +142,6 @@ export default function AddListingForm() {
               className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
               id='shippingEstimate' type='text' name='shippingEstimate' placeholder='Enter the shipping estimate of the product. (E.g. "Ships in 2-4 business days")' required
               defaultValue={state?.fields?.material || ''}
-              // value="Ships in 3-5 business days"
               />
             <TruckIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
           </div>
