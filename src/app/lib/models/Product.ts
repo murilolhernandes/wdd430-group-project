@@ -13,6 +13,8 @@ const ProductSchema = new mongoose.Schema({
   price: { type: Number, required: true, min: 0},
   shippingEstimate: { type: String, required: true },
   stock: { type: Number, required: true, min: 0 },
+  averageRating: { type: Number, default: 0 },
+  reviewCount: { type: Number, defaul: 0 },
 }, { timestamps: true });
 
 export const Product = mongoose.models.Product || mongoose.model('Product', ProductSchema);

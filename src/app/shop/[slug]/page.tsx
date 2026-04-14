@@ -9,6 +9,8 @@ import ReviewForm from '@/components/review-form';
 import dbConnect from '@/app/lib/mongodb';
 import { Suspense } from 'react';
 import mongoose from 'mongoose';
+import { Metadata } from 'next';
+import { Product } from '@/app/lib/models/Product';
 
 type ReviewDoc = {
   _id: mongoose.Types.ObjectId;
@@ -52,6 +54,22 @@ async function getReviews(productId: string) {
   await dbConnect();
   const objectId = new mongoose.Types.ObjectId(productId);
   return await Review.find({ productId: objectId }).sort({ createdAt: -1 });
+}
+
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const product = await getProductBySlug(slug);
+
+  if (!product) {
+    return {
+      title: 'Product Not Found',
+    };
+  }
+
+  return {
+    title: product.name,
+    description: product.description,
+  };
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
@@ -171,6 +189,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
                     </span>
                   ) : null}
                 </div>
+
+                {product.reviewCount > 0 ? (
+                  <div className="flex items-center gap-2 text-amber-500 text-lg">
+                    <span>{"★".repeat(Math.round(product.averageRating))}{"☆".repeat(5 - Math.round(product.averageRating))}</span>
+                    <span className='text-stone-500 text-sm'>
+                      {product.averageRating.toFixed(1)} ({product.reviewCount} {product.reviewCount === 1 ? 'review' : 'reviews'})
+                    </span>
+                  </div>
+                ) : (
+                  <p className='text-sm text-stone-500 italic'>No reviews yet</p>
+                )}
 
                 <p className='text-lg text-stone-600'>{product.description}</p>
               </div>

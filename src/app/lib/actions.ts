@@ -521,7 +521,7 @@ export async function clearCartDB() {
 export async function submitReview(formData: FormData) {
   const session = await auth();
   if (!session?.user.email) {
-    return { error: "You must be logged in to leaver a review." };
+    return { error: "You must be logged in to leave a review." };
   }
 
   const productId = formData.get('productId') as string;
@@ -549,6 +549,20 @@ export async function submitReview(formData: FormData) {
       comment,
     });
 
+    const product = await Product.findById(productId);
+    if (product) {
+      const currentCount = product.reviewCount || 0;
+      const currentAverage = product.averageRating || 0;
+
+      const newCount = currentCount + 1;
+      const newAverage = ((currentAverage * currentCount) + rating) / newCount;
+
+      await Product.findByIdAndUpdate(productId, {
+        reviewCount: newCount,
+        averageRating: newAverage
+      });
+    }
+
     success = true;
     slug = formData.get('slug') as string;
 
@@ -559,6 +573,7 @@ export async function submitReview(formData: FormData) {
 
   if (success) {
     revalidatePath(`/shop/${slug}`);
+    revalidatePath('/shop');
     redirect(`/shop/${slug}`);
   }
 }

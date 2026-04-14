@@ -16,6 +16,8 @@ export type Product = {
   imageAlt: string;
   description: string;
   featured: boolean;
+  averageRating: number;
+  reviewCount: number;
 };
 
 type RawProductDoc = Product & {
@@ -38,6 +40,8 @@ function toProduct(doc: RawProductDoc): Product {
     imageAlt: doc.imageAlt,
     description: doc.description,
     featured: doc.featured,
+    averageRating: doc.averageRating || 0,
+    reviewCount: doc.reviewCount || 0,
   };
 }
 

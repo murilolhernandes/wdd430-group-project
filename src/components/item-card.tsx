@@ -14,6 +14,17 @@ type ItemCardProps = {
   item: Product;
 };
 
+function StarRating({ rating, count }: { rating: number; count: number }) {
+  if (count === 0) return <span className="text-xs text-stone-400">No reviews yet</span>;
+  const roundedRating = Math.round(rating);
+  return (
+    <div className="flex items-center gap-1 text-amber-500 text-sm">
+      <span>{"★".repeat(roundedRating)}{"☆".repeat(5 - roundedRating)}</span>
+      <span className="text-stone-500 text-xs ml-1">({count})</span>
+    </div>
+  );
+}
+
 export default function ItemCard({ item }: ItemCardProps) {
   return (
     <article className='earth-card relative h-full overflow-hidden transition duration-200 hover:-translate-y-1 hover:shadow-xl'>
@@ -32,6 +43,9 @@ export default function ItemCard({ item }: ItemCardProps) {
             <h3 className='text-2xl font-semibold text-stone-800'>
               {item.name}
             </h3>
+            <div className='mt-1'>
+              <StarRating rating={item.averageRating} count={item.reviewCount} />
+            </div>
           </div>
 
           {item.featured ? (
