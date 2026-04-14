@@ -307,6 +307,7 @@ export async function addListing(
   try {
     const blob = await put(`items/${imageFile.name}`, imageFile, {
       access: 'public',
+      addRandomSuffix: true,
     });
 
     imagePathForDb = blob.url;
@@ -416,6 +417,7 @@ export async function updateListing(
     if (imageFile && imageFile.size > 0) {
       const blob = await put(`items/${imageFile.name}`, imageFile, {
       access: 'public',
+      addRandomSuffix: true,
       });
 
       imagePathForDb = blob.url;
