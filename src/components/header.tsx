@@ -73,7 +73,7 @@ export default function Header({ session }: { session: Session | null }) {
           </Link>
           {/* Create Listing — desktop only, anchored to logo so search can't crush it */}
           <Link
-            href="/listing"
+            href="/add-listing"
             className="nav-link hidden text-sm font-medium md:inline-flex"
           >
             Create Listing
