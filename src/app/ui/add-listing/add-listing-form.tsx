@@ -114,7 +114,7 @@ export default function AddListingForm() {
               <input
                 className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
                 id='price' type='number' name='price' placeholder='Enter the price of the product. (E.g. "48")' required
-                defaultValue={state?.fields?.name || ''}
+                defaultValue={state?.fields?.price || ''}
                 />
               <CurrencyDollarIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
             </div>
@@ -141,7 +141,7 @@ export default function AddListingForm() {
             <input
               className='peer block w-full rounded-md border border-stone-200 py-[9px] pl-10 text-sm text-stone-900 outline-2 placeholder:text-stone-400 focus:border-stone-800 focus:ring-stone-800'
               id='shippingEstimate' type='text' name='shippingEstimate' placeholder='Enter the shipping estimate of the product. (E.g. "Ships in 2-4 business days")' required
-              defaultValue={state?.fields?.material || ''}
+              defaultValue={state?.fields?.shippingEstimate || ''}
               />
             <TruckIcon className='pointer-events-none absolute left-3 top-1/2 h-[18px] -translate-y-1/2 text-stone-400 peer-focus:text-stone-800' />
           </div>

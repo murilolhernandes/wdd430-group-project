@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: 'Sign up',
 };
 
-export default async function LoginPage() {
+export default async function CreateAccountPage() {
   const session = await auth();
 
   if (session) {
